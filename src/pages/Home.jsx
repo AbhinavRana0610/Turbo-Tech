@@ -603,7 +603,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------------ SHOT TO SOLE */}
-      <section className="relative my-[clamp(2rem,5vw,4rem)] overflow-hidden">
+      <section className="relative mt-[clamp(2rem,5vw,4rem)] mb-[clamp(1rem,2.5vw,2rem)] overflow-hidden">
         <img
           src="/assets/img/process-sole-machine.webp"
           alt="A shoe held in an industrial moulding machine"
@@ -677,8 +677,10 @@ export default function Home() {
         </section>
       )}
 
-      {/* ---------------------------------------------------------- CTA */}
-      <section className="shell py-[clamp(2rem,5vw,4rem)]">
+      {/* ---------------------------------------------------------- CTA
+          Half the usual breathing room: the negative bottom margin eats half of
+          the footer's top margin, so only this section's gap shrinks. */}
+      <section className="shell py-[clamp(1rem,2.5vw,2rem)] -mb-[clamp(2rem,5vw,4.5rem)]">
         <Reveal>
           <div className="glass relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] px-[clamp(1.25rem,4vw,4rem)] py-[clamp(2.25rem,5vw,4.5rem)] text-center">
             <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.3),transparent_65%)] blur-2xl" />
