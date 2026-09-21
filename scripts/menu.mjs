@@ -1,0 +1,12 @@
+import puppeteer from 'puppeteer-core'
+const b = await puppeteer.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true, args: ['--no-sandbox','--hide-scrollbars','--enable-unsafe-swiftshader'] })
+const p = await b.newPage()
+p.on('pageerror', e => console.log('PAGE-ERR:', String(e).slice(0,200)))
+await p.setViewport({ width: 320, height: 760 })
+await p.goto('http://127.0.0.1:5180/', { waitUntil: 'domcontentloaded' })
+await new Promise(r => setTimeout(r, 2000))
+await p.click('button[aria-label="Open menu"]')
+await new Promise(r => setTimeout(r, 900))
+console.log('expanded:', await p.$eval('button[aria-label="Close menu"]', el => el.getAttribute('aria-expanded')))
+await p.screenshot({ path: process.env.OUT })
+await b.close()
