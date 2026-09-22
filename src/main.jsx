@@ -7,6 +7,7 @@ import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Brochure from './pages/Brochure'
 import NotFound from './pages/NotFound'
 import './styles/index.css'
 
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="products" element={<Products />} />
           <Route path="products/:slug" element={<ProductDetail />} />
           <Route path="about" element={<About />} />
+          <Route path="brochure" element={<Brochure />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Route>

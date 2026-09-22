@@ -1,7 +1,45 @@
 import { Link } from 'react-router-dom'
-import { company, products } from '../data/products'
+import { company } from '../data/products'
 import { Wordmark } from './Navbar'
-import { Arrow } from './ui'
+
+/* Footer copy follows section 12 of the homepage content document. */
+const QUICK_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About Us' },
+  { to: '/products', label: 'Products' },
+  { to: '/#applications', label: 'Applications' },
+  { to: '/#why-turbotech', label: 'Why Turbotech' },
+  { to: '/brochure', label: 'Resources' },
+  { to: '/contact', label: 'Contact Us' },
+]
+
+const PRODUCT_LINKS = [
+  { to: '/products/pu-pigments', label: 'PU Pigments' },
+  { to: '/products/release-agents', label: 'Release Agents' },
+  { to: '/products/imc', label: 'IMC' },
+  { to: '/products/eva-compound', label: 'EVA Compound' },
+  { to: '/products/pvc-compound', label: 'PVC Compound' },
+  { to: '/products/solvents', label: 'Specialty Chemicals' },
+]
+
+const PHONE = '+91 8130243046'
+
+function Column({ title, links }) {
+  return (
+    <nav aria-label={title}>
+      <h3 className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-ink">{title}</h3>
+      <ul className="mt-4 space-y-2.5">
+        {links.map((l) => (
+          <li key={l.to}>
+            <Link to={l.to} className="text-sm text-slate-500 transition-colors duration-300 hover:text-blue-brand">
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -10,107 +48,38 @@ export default function Footer() {
     <footer className="relative mt-[clamp(4rem,10vw,9rem)] border-t border-ink/10 bg-white/70">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-brand/70 to-transparent" />
 
-      <div className="shell grid gap-[clamp(2rem,4vw,3.5rem)] py-[clamp(2.5rem,6vw,5rem)] md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div className="shell grid gap-[clamp(2rem,4vw,3.5rem)] py-[clamp(2.5rem,6vw,5rem)] sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         {/* Brand */}
         <div>
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="Turbotech home">
             <img src="/assets/logo-mark.png" alt="" className="h-11 w-auto" width="434" height="455" />
             <Wordmark />
           </Link>
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-slate-500 pretty">
-            {company.tagline}. Pigments, mould release agents, in-mould coatings, EVA &amp; PVC
-            compounds and process solvents — manufactured in Delhi, India.
-          </p>
-          <p className="mt-5 font-display text-sm font-semibold text-blue-brand/90">
-            “{company.motto}”
+          <p className="mt-5 max-w-xs font-display text-sm font-semibold leading-relaxed text-blue-brand pretty">
+            A Complete Solution for P.U. PVC &amp; EVA Footwear
           </p>
         </div>
 
-        {/* Products */}
-        <nav aria-label="Products">
-          <h3 className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-ink">Products</h3>
-          <ul className="mt-4 space-y-2.5">
-            {products.slice(0, 5).map((p) => (
-              <li key={p.slug}>
-                <Link
-                  to={`/products/${p.slug}`}
-                  className="text-sm text-slate-500 transition-colors duration-300 hover:text-blue-brand"
-                >
-                  {p.short}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link to="/products?c=solvents" className="text-sm text-slate-500 transition-colors hover:text-blue-brand">
-                Solvents &amp; Auxiliaries
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Company */}
-        <nav aria-label="Company">
-          <h3 className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-ink">Company</h3>
-          <ul className="mt-4 space-y-2.5">
-            {[
-              { to: '/about', label: 'About Us' },
-              { to: '/products', label: 'All Products' },
-              { to: '/contact', label: 'Contact' },
-            ].map((l) => (
-              <li key={l.to}>
-                <Link to={l.to} className="text-sm text-slate-500 transition-colors hover:text-blue-brand">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <a
-                href="/assets/turbotech-brochure.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="group inline-flex items-center gap-1.5 text-sm text-slate-500 transition-colors hover:text-blue-brand"
-              >
-                Download Brochure <Arrow className="h-3.5 w-3.5" />
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <Column title="Quick Links" links={QUICK_LINKS} />
+        <Column title="Products" links={PRODUCT_LINKS} />
 
         {/* Contact */}
         <div>
-          <h3 className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-ink">Get in touch</h3>
+          <h3 className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-ink">Contact</h3>
           <address className="mt-4 space-y-3 text-sm not-italic text-slate-500">
-            <p className="leading-relaxed">
-              {company.address.line1}
-              <br />
-              {company.address.line2}
-              <br />
-              {company.address.city} — {company.address.pin}
-            </p>
-            <p className="flex flex-wrap gap-x-3 gap-y-1">
-              {company.phones.slice(0, 2).map((p) => (
-                <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="transition-colors hover:text-blue-brand">
-                  {p}
-                </a>
-              ))}
-            </p>
-            <a
-              href={`mailto:${company.email}`}
-              className="block break-all transition-colors hover:text-blue-brand"
-            >
+            <p className="leading-relaxed">Plot No. 128, Khasra No. 69, Village Singhola, Delhi – 110040</p>
+            <a href={`tel:${PHONE.replace(/\s/g, '')}`} className="block transition-colors hover:text-blue-brand">
+              {PHONE}
+            </a>
+            <a href={`mailto:${company.email}`} className="block break-all transition-colors hover:text-blue-brand">
               {company.email}
             </a>
           </address>
         </div>
       </div>
 
-      <div className="shell flex flex-col items-center justify-between gap-3 border-t border-ink/8 py-6 text-center text-xs text-slate-500 sm:flex-row sm:text-left">
-        <p>
-          © {year} {company.legal}. All rights reserved.
-        </p>
-        <p className="tracking-wide">
-          GSTIN <span className="text-slate-500">{company.gstin}</span>
-        </p>
+      <div className="shell border-t border-ink/8 py-6 text-center text-xs text-slate-500 sm:text-left">
+        <p>© {year} Nirmal Industries. All Rights Reserved.</p>
       </div>
     </footer>
   )

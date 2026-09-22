@@ -26,7 +26,7 @@ GitHub Pages or any normal web server.
 | --- | --- |
 | `/` | Home — 3D hero, shade swatches, product grid, process, industries |
 | `/products` | All 10 products, filterable by category (`?c=colourants` etc.) |
-| `/products/:slug` | Product detail — properties, types, applications |
+| `/products/:slug` | Product pages — PU Pigments, Release Agents, IMC, EVA Compound, PVC Compound, Solvents (`/products/mcl` etc. jump to their card on the Solvents page) |
 | `/about` | About Nirmal Industries |
 | `/contact` | Enquiry form, phone/WhatsApp/email, map |
 
@@ -36,8 +36,11 @@ Everything the site says about products and the company is in one file:
 
 **`src/data/products.js`** — the 10 products, 5 categories, the industries list and
 the company block (address, phones, email, GSTIN). Edit there and every page,
-the footer and the contact dropdown update together. No other file needs touching
-to change copy, add a product or correct a phone number.
+the footer and the contact dropdown update together.
+
+**`src/data/productPages.js`** — the full copy of the six product pages, word for word
+from the product-page content doc (one tab per product). `src/pages/ProductPage.jsx`
+only decides layout and animation; change wording in the data file.
 
 ## The 3D slipper
 

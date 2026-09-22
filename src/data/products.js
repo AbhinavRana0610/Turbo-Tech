@@ -263,6 +263,9 @@ export const company = {
   legal: 'Nirmal Industries',
   proprietor: 'Nirmal Mittal',
   gstin: '07ARDPM0055B1ZE',
+  /* From GST REG-06 (page 1 of the certificate). */
+  gstRegisteredFrom: '21 February 2023',
+  gstType: 'Regular',
   constitution: 'Proprietorship',
   address: {
     line1: 'Plot No. 128, Khasra No. 69',

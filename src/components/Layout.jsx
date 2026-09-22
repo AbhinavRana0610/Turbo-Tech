@@ -26,12 +26,31 @@ function useLenis() {
   }, [])
 }
 
+/** Resets scroll on navigation, or scrolls to the #section when the link has one. */
 function ScrollToTop() {
-  const { pathname, search } = useLocation()
+  const { pathname, search, hash, key } = useLocation()
   useEffect(() => {
-    if (window.__lenis) window.__lenis.scrollTo(0, { immediate: true })
-    else window.scrollTo(0, 0)
-  }, [pathname, search])
+    if (!hash) {
+      if (window.__lenis) window.__lenis.scrollTo(0, { immediate: true })
+      else window.scrollTo(0, 0)
+      return
+    }
+    // Wait out the 0.4s page transition (during it the target can also exist inside the
+    // outgoing page), then retry briefly until the section is mounted.
+    let tries = 0
+    let timer
+    const seek = () => {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)))
+      if (el) {
+        if (window.__lenis) window.__lenis.scrollTo(el, { offset: -90 })
+        else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' })
+      } else if (tries++ < 20) {
+        timer = setTimeout(seek, 60)
+      }
+    }
+    timer = setTimeout(seek, 480)
+    return () => clearTimeout(timer)
+  }, [pathname, search, hash, key])
   return null
 }
 
