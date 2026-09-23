@@ -269,7 +269,7 @@ function Hero({ page }) {
         style={{ background: `radial-gradient(circle, ${accent}55, transparent 65%)` }}
       />
 
-      <div className="shell relative grid items-start gap-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="shell relative grid items-start gap-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
         {/* Copy */}
         <div className="order-2 lg:order-1">
           <motion.nav
@@ -366,7 +366,7 @@ function Hero({ page }) {
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.1, delay: 0.1, ease: EASE }}
-          className="relative order-1 lg:sticky lg:top-28 lg:order-2"
+          className="relative order-1 lg:order-2 lg:flex lg:h-full lg:flex-col"
         >
           {/* spinning gradient ring */}
           <div className="pointer-events-none absolute -inset-3 rounded-[2rem] opacity-70 blur-[2px] sm:-inset-4">
@@ -380,7 +380,7 @@ function Hero({ page }) {
             initial={{ clipPath: 'inset(12% 12% 12% 12% round 1.75rem)' }}
             animate={{ clipPath: 'inset(0% 0% 0% 0% round 1.75rem)' }}
             transition={{ duration: 1.3, delay: 0.15, ease: EASE }}
-            className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-ink/10 shadow-[0_40px_80px_-40px_rgba(10,31,68,0.55)] lg:aspect-[4/5]"
+            className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-ink/10 shadow-[0_40px_80px_-40px_rgba(10,31,68,0.55)] lg:aspect-auto lg:h-[65%] lg:w-[85%] lg:min-h-[20rem] lg:flex-none lg:self-center"
           >
             <motion.img
               src={image}
@@ -713,58 +713,91 @@ function Swatch({ kind, accent }) {
 }
 
 /* Sticky heading on the left; numbered cards on the right with a line that fills as you scroll. */
+/* "Why choose" sections. An index on the left picks the point; the panel on the
+   right shows it — one calm block instead of a long column of boxed cards. */
 function StackCards({ s, n, accent }) {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 60%'] })
-  const fill = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 })
+  const [active, setActive] = useState(0)
+  const it = s.items[active]
 
   return (
     <section className="shell py-[clamp(3rem,8vw,6.5rem)]">
-      <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="lg:sticky lg:top-28">
-          <Heading s={s} n={n} />
-          <Paras items={s.paras} className="mt-5" />
-          <Reveal delay={0.12}>
-            <div className="mt-8 hidden flex-wrap gap-2 lg:flex">
-              {s.items.map((it) => (
-                <span key={it.t} className="rounded-full border border-ink/10 bg-white/70 px-3 py-1.5 text-[0.7rem] font-semibold text-slate-600">
-                  {it.t}
-                </span>
-              ))}
-            </div>
-          </Reveal>
-        </div>
+      <div className="max-w-3xl">
+        <Heading s={s} n={n} />
+        <Paras items={s.paras} className="mt-5" />
+      </div>
 
-        <div ref={ref} className="relative pl-[clamp(1.5rem,3vw,2.5rem)]">
-          <div className="absolute bottom-2 left-0 top-2 w-[3px] rounded-full bg-ink/8">
-            <motion.div style={{ scaleY: fill, background: `linear-gradient(180deg, #004da5, #00bffe, ${accent})` }} className="h-full w-full origin-top rounded-full" />
-          </div>
-          <div className="space-y-4">
-            {s.items.map((it, i) => (
-              <Reveal key={it.t} delay={0.04}>
-                <Card accent={accent} className="p-[clamp(1.2rem,2.4vw,1.9rem)]">
-                  <div className="flex items-start gap-4">
+      <div className="mt-[clamp(1.75rem,4vw,3rem)] grid gap-[clamp(1.25rem,2.5vw,2.25rem)] lg:grid-cols-[0.85fr_1.15fr]">
+        <Reveal>
+          <ul className="flex flex-col gap-1">
+            {s.items.map((x, i) => {
+              const on = i === active
+              return (
+                <li key={x.t}>
+                  <button
+                    type="button"
+                    onClick={() => setActive(i)}
+                    aria-pressed={on}
+                    className={`relative flex w-full items-center gap-3.5 rounded-2xl px-4 py-3.5 text-left transition-colors duration-400 ${
+                      on ? 'bg-white shadow-[0_18px_44px_-30px_rgba(10,31,68,0.65)]' : 'hover:bg-white/60'
+                    }`}
+                  >
                     <span
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-[0_14px_30px_-12px_rgba(0,114,206,0.7)] transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110"
-                      style={{ background: `linear-gradient(135deg, #004da5, #0072ce 45%, ${accent})` }}
-                    >
-                      <Icon title={it.t} className="h-6 w-6" />
+                      className={`absolute inset-y-3 left-0 w-[3px] rounded-full transition-opacity duration-500 ${on ? 'opacity-100' : 'opacity-0'}`}
+                      style={{ background: `linear-gradient(180deg, #004da5, ${accent})` }}
+                    />
+                    <span className={`font-display text-[0.7rem] font-bold tracking-[0.2em] transition-colors duration-400 ${on ? 'text-blue-brand' : 'text-slate-300'}`}>
+                      {String(i + 1).padStart(2, '0')}
                     </span>
-                    <div>
-                      <span className="font-display text-[0.68rem] font-bold tracking-[0.2em] text-slate-400">{String(i + 1).padStart(2, '0')}</span>
-                      <h3 className="font-display text-[clamp(1.05rem,1vw+0.8rem,1.35rem)] font-bold leading-snug text-ink">{it.t}</h3>
-                      {[].concat(it.d).map((t) => (
-                        <p key={t} className="mt-2.5 text-[clamp(0.84rem,0.35vw+0.76rem,0.96rem)] leading-relaxed text-slate-500 pretty">
-                          {t}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              </Reveal>
-            ))}
+                    <span className={`font-display text-[clamp(0.92rem,0.5vw+0.8rem,1.06rem)] font-bold leading-snug transition-colors duration-400 ${on ? 'text-ink' : 'text-slate-500'}`}>
+                      {x.t}
+                    </span>
+                    <Arrow className={`ml-auto h-3.5 w-3.5 shrink-0 text-blue-brand transition-all duration-400 ${on ? 'opacity-100' : '-translate-x-1 opacity-0'}`} />
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </Reveal>
+
+        <Reveal delay={0.1} className="h-full">
+          <div className="relative h-full overflow-hidden rounded-[clamp(1.25rem,2.5vw,1.9rem)] border border-ink/10 bg-white/80 p-[clamp(1.4rem,3vw,2.4rem)] shadow-[0_34px_70px_-48px_rgba(10,31,68,0.65)] backdrop-blur lg:min-h-[21rem]">
+            <div
+              className="pointer-events-none absolute -right-14 -top-14 h-52 w-52 rounded-full opacity-55 blur-3xl"
+              style={{ background: `radial-gradient(circle, ${accent}55, transparent 70%)` }}
+            />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={it.t}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.45, ease: EASE }}
+                className="relative"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <span
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-white shadow-[0_18px_36px_-14px_rgba(0,114,206,0.75)]"
+                    style={{ background: `linear-gradient(135deg, #004da5, #0072ce 45%, ${accent})` }}
+                  >
+                    <Icon title={it.t} className="h-7 w-7" />
+                  </span>
+                  <span className="font-display text-[clamp(2.4rem,5vw,3.6rem)] font-extrabold leading-none tracking-tight text-ink/8">
+                    {String(active + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                <h3 className="mt-6 font-display text-[clamp(1.2rem,1.3vw+0.95rem,1.8rem)] font-extrabold leading-tight tracking-tight text-ink">{it.t}</h3>
+                <span className="mt-4 block h-px w-14" style={{ background: `linear-gradient(90deg, #004da5, ${accent})` }} />
+
+                {[].concat(it.d).map((t) => (
+                  <p key={t} className="mt-4 text-[clamp(0.86rem,0.4vw+0.77rem,0.99rem)] leading-relaxed text-slate-500 pretty">
+                    {t}
+                  </p>
+                ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   )

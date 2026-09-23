@@ -443,13 +443,6 @@ const puPigments = {
             'The product brochure identifies chemical resistance against these types of exposures as a characteristic of the PU pigment range.',
           ],
         },
-        {
-          t: 'Migration Resistance',
-          d: [
-            'Migration can affect the appearance of coloured products and adjacent materials.',
-            'Turbotech PU Pigments are designed to minimize colour bleeding or transfer to adjacent materials where the appropriate grade is selected for the application.',
-          ],
-        },
       ],
     },
     {
@@ -520,7 +513,6 @@ const puPigments = {
         { t: 'Heat Stability', d: 'For suitable processing conditions.' },
         { t: 'Light Fastness', d: 'For maintaining colour appearance during exposure to light.' },
         { t: 'Chemical Resistance', d: 'For relevant exposure conditions.' },
-        { t: 'Migration Resistance', d: 'For minimizing colour transfer where applicable.' },
       ],
       compact: true,
       note: 'These properties are outlined in the product information supplied for the PU pigment range.',
@@ -709,7 +701,6 @@ const imc = {
         { t: 'Flexibility', d: 'Footwear materials need to accommodate movement and bending. IMC provides flexibility, making it suitable for footwear applications where the coated surface needs to work with the movement of the product.' },
         { t: 'Chemical Resistance', d: 'IMC also provides chemical resistance, supporting applications where resistance to different chemical conditions is an important consideration.' },
         { t: 'UV & Weather Resistance', d: 'UV and weather resistance provide additional protection for suitable footwear applications exposed to environmental conditions.' },
-        { t: 'Colour Stability', d: 'Colour stability is an important consideration for footwear where consistent visual appearance is required. IMC provides colour stability as part of its performance profile.' },
       ],
     },
     {
