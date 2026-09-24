@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import Lenis from 'lenis'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import FloatingContact from './FloatingContact'
 import { Backdrop } from './ui'
 
 /** Smooth scrolling, skipped when the visitor prefers reduced motion. */
@@ -82,7 +83,8 @@ function ScrollBar() {
   )
 }
 
-/** Back-to-top button that fades in once you are past the first screen. */
+/** Back-to-top button that fades in once you are past the first screen.
+    Positioned by FloatingContact, at the bottom of its column. */
 function ToTop() {
   const [show, setShow] = useState(false)
   useEffect(() => {
@@ -102,7 +104,7 @@ function ToTop() {
             window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' })
           }
           aria-label="Back to top"
-          className="glass fixed bottom-[clamp(1rem,3vw,2rem)] right-[clamp(1rem,3vw,2rem)] z-30 flex h-11 w-11 items-center justify-center rounded-full text-blue-brand transition-colors hover:border-cyan-brand/60 hover:text-ink"
+          className="glass flex h-11 w-11 items-center justify-center rounded-full text-blue-brand transition-colors hover:border-cyan-brand/60 hover:text-ink sm:h-12 sm:w-12"
         >
           <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
             <path d="M12 19V5m0 0-6 6m6-6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -135,7 +137,9 @@ export default function Layout() {
         </motion.main>
       </AnimatePresence>
       <Footer />
-      <ToTop />
+      <FloatingContact>
+        <ToTop />
+      </FloatingContact>
     </>
   )
 }
