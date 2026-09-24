@@ -5,6 +5,7 @@ import Lenis from 'lenis'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import FloatingContact from './FloatingContact'
+import EnquiryPopup from './EnquiryPopup'
 import { Backdrop } from './ui'
 
 /** Smooth scrolling, skipped when the visitor prefers reduced motion. */
@@ -140,6 +141,7 @@ export default function Layout() {
       <FloatingContact>
         <ToTop />
       </FloatingContact>
+      <EnquiryPopup />
     </>
   )
 }

@@ -1,32 +1,12 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Arrow, Button, Card, Eyebrow, Reveal, Stagger, stagItem } from '../components/ui'
+import { Arrow, Button, Card, Eyebrow, Field, Reveal, Stagger, stagItem } from '../components/ui'
 import { company, products } from '../data/products'
 
 /* No backend on this build: the form validates in the browser and then hands
    the enquiry to the visitor's mail client or WhatsApp, pre-filled. */
 
 const EMPTY = { name: '', company: '', email: '', phone: '', product: '', message: '' }
-
-function Field({ label, name, value, onChange, error, type = 'text', ...rest }) {
-  return (
-    <label className="block">
-      <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</span>
-      <input
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        aria-invalid={!!error}
-        className={`mt-2 w-full rounded-xl border bg-ink/[0.04] px-4 py-3 text-[0.92rem] text-ink placeholder:text-slate-500 transition-colors duration-300 focus:bg-ink/[0.07] focus:outline-none ${
-          error ? 'border-magenta/70' : 'border-ink/12 focus:border-cyan-brand/70'
-        }`}
-        {...rest}
-      />
-      {error && <span className="mt-1.5 block text-[0.72rem] font-medium text-magenta-soft">{error}</span>}
-    </label>
-  )
-}
 
 export default function Contact() {
   const [form, setForm] = useState(EMPTY)
