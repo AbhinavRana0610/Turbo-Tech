@@ -163,11 +163,39 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => setOpen(false), [pathname])
+  const [productsOpen, setProductsOpen] = useState(false)
+  const close = () => setOpen(false)
 
+  useEffect(() => setOpen(false), [pathname])
+  useEffect(() => { if (!open) setProductsOpen(false) }, [open])
+
+  // Lock the page behind the drawer. Lenis drives the page scroll from wheel/touch
+  // events, so overflow alone doesn't stop it; it has to be paused as well.
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    if (!open) return
+    const root = document.documentElement
+    root.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    window.__lenis?.stop()
+    return () => {
+      root.style.overflow = ''
+      document.body.style.overflow = ''
+      window.__lenis?.start()
+    }
+  }, [open])
+
+  // Escape closes the drawer; so does growing past the breakpoint where it is hidden.
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const onMq = (e) => e.matches && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    mq.addEventListener('change', onMq)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      mq.removeEventListener('change', onMq)
+    }
   }, [open])
 
   return (
@@ -255,76 +283,133 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 lg:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
           >
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-2xl" onClick={() => setOpen(false)} />
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-2xl" onClick={close} />
+            {/* data-lenis-prevent lets the drawer scroll natively while Lenis is paused. */}
             <motion.div
+              data-lenis-prevent
               initial={{ y: -18, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -12, opacity: 0 }}
               transition={{ duration: 0.4, ease: EASE }}
-              className="relative flex h-full flex-col justify-center overflow-y-auto px-[var(--shell)] pb-16 pt-24 [@media(max-height:760px)]:justify-start"
+              className="relative flex h-full flex-col overflow-y-auto overscroll-contain px-[var(--shell)] pb-16 pt-24"
             >
-              <ul className="space-y-1">
-                {links.map((l, i) => (
-                  <motion.li
-                    key={l.to}
-                    initial={{ opacity: 0, x: -18 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.06 + i * 0.06, duration: 0.45, ease: EASE }}
-                  >
-                    <NavLink
-                      to={l.to}
-                      end={l.to === '/'}
-                      className={({ isActive }) =>
-                        `flex items-baseline gap-3 border-b border-ink/8 py-4 font-display text-[clamp(1.5rem,7vw,2.4rem)] font-bold tracking-tight transition-colors ${
-                          isActive ? 'text-gradient' : 'text-ink/85 hover:text-blue-brand'
-                        }`
-                      }
-                    >
-                      <span className="font-sans text-[0.6rem] font-semibold text-cyan-brand/70">
-                        0{i + 1}
-                      </span>
-                      {l.label}
-                    </NavLink>
-                    {l.to === '/products' && (
-                      <div className="flex flex-wrap gap-1.5 border-b border-ink/8 py-3">
-                        {productPages.map((p) => (
+              {/* my-auto centres the menu but lets it start at the top when it overflows. */}
+              <div className="my-auto">
+                <ul className="space-y-1">
+                  {links.map((l, i) => {
+                    const rowCls = (isActive) =>
+                      `flex w-full items-baseline gap-3 border-b border-ink/8 py-4 text-left font-display text-[clamp(1.5rem,7vw,2.4rem)] font-bold tracking-tight transition-colors ${
+                        isActive ? 'text-gradient' : 'text-ink/85 hover:text-blue-brand'
+                      }`
+                    const num = (
+                      <span className="font-sans text-[0.6rem] font-semibold text-cyan-brand/70">0{i + 1}</span>
+                    )
+                    return (
+                      <motion.li
+                        key={l.to}
+                        initial={{ opacity: 0, x: -18 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.06 + i * 0.06, duration: 0.45, ease: EASE }}
+                      >
+                        {l.to === '/products' ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => setProductsOpen((v) => !v)}
+                              aria-expanded={productsOpen}
+                              aria-controls="mobile-products"
+                              className={rowCls(pathname.startsWith('/products'))}
+                            >
+                              {num}
+                              {l.label}
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                aria-hidden="true"
+                                className={`ml-auto h-5 w-5 self-center text-blue-brand transition-transform duration-300 ${
+                                  productsOpen ? 'rotate-180' : ''
+                                }`}
+                              >
+                                <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {productsOpen && (
+                                <motion.div
+                                  id="mobile-products"
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.3, ease: EASE }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="flex flex-wrap gap-1.5 border-b border-ink/8 py-3">
+                                    {productPages.map((p) => (
+                                      <NavLink
+                                        key={p.slug}
+                                        to={`/products/${p.slug}`}
+                                        onClick={close}
+                                        className={({ isActive }) =>
+                                          `inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.78rem] font-semibold transition-colors ${
+                                            isActive
+                                              ? 'border-cyan-brand/40 bg-cyan-brand/10 text-blue-brand'
+                                              : 'border-ink/10 bg-white text-slate-600 hover:text-ink'
+                                          }`
+                                        }
+                                      >
+                                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: p.accent }} />
+                                        {p.name}
+                                      </NavLink>
+                                    ))}
+                                    <NavLink
+                                      to="/products"
+                                      end
+                                      onClick={close}
+                                      className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-deep via-blue-brand to-cyan-brand px-3 py-1.5 text-[0.78rem] font-semibold text-white"
+                                    >
+                                      All Products <Arrow className="h-3 w-3" />
+                                    </NavLink>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        ) : (
                           <NavLink
-                            key={p.slug}
-                            to={`/products/${p.slug}`}
-                            className={({ isActive }) =>
-                              `inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.78rem] font-semibold transition-colors ${
-                                isActive
-                                  ? 'border-cyan-brand/40 bg-cyan-brand/10 text-blue-brand'
-                                  : 'border-ink/10 bg-white text-slate-600 hover:text-ink'
-                              }`
-                            }
+                            to={l.to}
+                            end={l.to === '/'}
+                            onClick={close}
+                            className={({ isActive }) => rowCls(isActive)}
                           >
-                            <span className="h-1.5 w-1.5 rounded-full" style={{ background: p.accent }} />
-                            {p.name}
+                            {num}
+                            {l.label}
                           </NavLink>
-                        ))}
-                      </div>
-                    )}
-                  </motion.li>
-                ))}
-              </ul>
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.34, duration: 0.45 }}
-                className="mt-8"
-              >
-                <Button to="/contact" className="w-full">
-                  Get a Quote <Arrow />
-                </Button>
-                <a
-                  href="mailto:turbotechchemicals@gmail.com"
-                  className="mt-5 block break-all text-sm text-slate-500 transition-colors hover:text-blue-brand"
+                        )}
+                      </motion.li>
+                    )
+                  })}
+                </ul>
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.34, duration: 0.45 }}
+                  className="mt-8"
                 >
-                  turbotechchemicals@gmail.com
-                </a>
-              </motion.div>
+                  <Button to="/contact" onClick={close} className="w-full">
+                    Get a Quote <Arrow />
+                  </Button>
+                  <a
+                    href="mailto:turbotechchemicals@gmail.com"
+                    className="mt-5 block break-all text-sm text-slate-500 transition-colors hover:text-blue-brand"
+                  >
+                    turbotechchemicals@gmail.com
+                  </a>
+                </motion.div>
+              </div>
             </motion.div>
           </motion.div>
         )}

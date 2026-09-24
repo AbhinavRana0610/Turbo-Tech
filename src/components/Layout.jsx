@@ -102,7 +102,7 @@ function ToTop() {
             window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' })
           }
           aria-label="Back to top"
-          className="glass fixed bottom-[clamp(1rem,3vw,2rem)] right-[clamp(1rem,3vw,2rem)] z-40 flex h-11 w-11 items-center justify-center rounded-full text-blue-brand transition-colors hover:border-cyan-brand/60 hover:text-ink"
+          className="glass fixed bottom-[clamp(1rem,3vw,2rem)] right-[clamp(1rem,3vw,2rem)] z-30 flex h-11 w-11 items-center justify-center rounded-full text-blue-brand transition-colors hover:border-cyan-brand/60 hover:text-ink"
         >
           <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
             <path d="M12 19V5m0 0-6 6m6-6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
