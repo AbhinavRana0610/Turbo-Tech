@@ -4,21 +4,22 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Arrow, Button, Field } from './ui'
 import { company, products } from '../data/products'
 
-/* Enquiry form that pops up once a visitor has scrolled past the first two sections
-   of a page. Shown at most once per browser session, and never on /contact, which
-   already carries the full form. Like the Contact page there is no backend: Submit
-   hands the enquiry to the visitor's mail app, pre-filled. */
+/* Enquiry form that pops up on every page once the visitor has scrolled far enough:
+   past two sections, or past one on pages with three sections or fewer. It shows once
+   per page view, and stops for the rest of the session once an enquiry is submitted.
+   Like the Contact page there is no backend: Submit hands the enquiry to the
+   visitor's mail app, pre-filled. */
 
 const EMPTY = { name: '', email: '', phone: '', product: '', message: '' }
-const SEEN_KEY = 'tt-enquiry-popup-seen'
+const SENT_KEY = 'tt-enquiry-sent'
 const EASE = [0.16, 1, 0.3, 1]
 
-// Session storage can throw (private mode, blocked site data); treat that as "not seen".
-const seen = () => {
-  try { return sessionStorage.getItem(SEEN_KEY) === '1' } catch { return false }
+// Session storage can throw (private mode, blocked site data); treat that as "not sent".
+const alreadySent = () => {
+  try { return sessionStorage.getItem(SENT_KEY) === '1' } catch { return false }
 }
-const markSeen = () => {
-  try { sessionStorage.setItem(SEEN_KEY, '1') } catch { /* nothing to do */ }
+const markSent = () => {
+  try { sessionStorage.setItem(SENT_KEY, '1') } catch { /* nothing to do */ }
 }
 
 /* The page's top-level content sections. Skips sections nested inside another, and
@@ -31,45 +32,45 @@ function topSections() {
   )
 }
 
-/* True once the user has scrolled past the first `count` sections of the current page. */
-function useScrolledPast(count, enabled) {
-  const [past, setPast] = useState(false)
+/* Calls `onReach` once per page, when the visitor scrolls past the page's trigger
+   section: the 2nd, or the 1st when the page has three sections or fewer. */
+function useSectionTrigger(onReach, enabled) {
   const { pathname } = useLocation()
+  const cb = useRef(onReach)
+  cb.current = onReach
 
   useEffect(() => {
-    setPast(false)
     if (!enabled) return
+    let fired = false
     const check = () => {
-      const target = topSections()[count - 1]
+      if (fired) return
+      const sections = topSections()
+      const target = sections[sections.length <= 3 ? 0 : 1]
       // Another dialog (the mobile menu, the call popup) is open: wait for it to close.
       if (!target || document.querySelector('[role="dialog"]')) return
-      if (target.getBoundingClientRect().bottom <= 0) setPast(true)
+      if (target.getBoundingClientRect().bottom <= 0) {
+        fired = true
+        cb.current()
+      }
     }
     window.addEventListener('scroll', check, { passive: true })
     return () => window.removeEventListener('scroll', check)
-  }, [pathname, count, enabled])
-
-  return past
+  }, [pathname, enabled])
 }
 
 export default function EnquiryPopup() {
   const { pathname } = useLocation()
-  const [done, setDone] = useState(seen)
+  const [submitted, setSubmitted] = useState(alreadySent)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
   const firstField = useRef(null)
 
-  const armed = !done && pathname !== '/contact'
-  const past = useScrolledPast(2, armed)
+  useSectionTrigger(() => setOpen(true), !submitted)
 
-  useEffect(() => {
-    if (!past || !armed) return
-    markSeen()
-    setDone(true)
-    setOpen(true)
-  }, [past, armed])
+  // A new page starts closed; its own scroll decides when the popup shows.
+  useEffect(() => setOpen(false), [pathname])
 
   // Lock the page behind the popup (Lenis needs pausing too), close on Escape.
   useEffect(() => {
@@ -123,6 +124,8 @@ export default function EnquiryPopup() {
     const subject = `Enquiry${form.product ? ` — ${form.product}` : ''} | ${form.name}`
     window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     setSent(true)
+    markSent()
+    setSubmitted(true)
   }
 
   return (
@@ -147,7 +150,7 @@ export default function EnquiryPopup() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.45, ease: EASE }}
-            className="relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-3xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgba(10,31,68,0.6)] sm:max-w-xl sm:rounded-3xl"
+            className="relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-3xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgba(10,31,68,0.6)] [scrollbar-width:none] sm:max-w-2xl sm:rounded-3xl [&::-webkit-scrollbar]:hidden"
           >
             {/* Brand strip, as on the site's cards */}
             <div className="h-1 w-full bg-gradient-to-r from-blue-deep via-cyan-brand to-magenta" />
@@ -163,7 +166,7 @@ export default function EnquiryPopup() {
               </svg>
             </button>
 
-            <div className="p-[clamp(1.25rem,4vw,2.25rem)]">
+            <div className="p-[clamp(1.25rem,3.5vw,2rem)]">
               {sent ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.96 }}
@@ -204,38 +207,35 @@ export default function EnquiryPopup() {
                     Fields marked with an asterisk are required.
                   </p>
 
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
-                      <Field ref={firstField} label="Name *" name="name" value={form.name} onChange={onChange} error={errors.name} autoComplete="name" placeholder="Your name" />
-                    </div>
+                  <div className="mt-5 grid gap-3 md:grid-cols-2 md:gap-x-4">
+                    <Field ref={firstField} label="Name *" name="name" value={form.name} onChange={onChange} error={errors.name} autoComplete="name" placeholder="Your name" />
                     <Field label="Email ID *" name="email" type="email" value={form.email} onChange={onChange} error={errors.email} autoComplete="email" placeholder="you@company.com" />
                     <Field label="Phone number *" name="phone" type="tel" value={form.phone} onChange={onChange} error={errors.phone} autoComplete="tel" placeholder="+91 ..." />
+                    <label className="block">
+                      <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        Services / products interested
+                      </span>
+                      <select
+                        name="product"
+                        value={form.product}
+                        onChange={onChange}
+                        className="mt-2 w-full appearance-none rounded-xl border border-ink/12 bg-ink/[0.04] px-4 py-3 text-[0.92rem] text-ink transition-colors duration-300 focus:border-cyan-brand/70 focus:outline-none"
+                      >
+                        <option value="" className="bg-white">Select a product…</option>
+                        {products.map((p) => (
+                          <option key={p.slug} value={p.name} className="bg-white">{p.name}</option>
+                        ))}
+                        <option value="Shade card" className="bg-white">Shade card</option>
+                        <option value="Other" className="bg-white">Something else</option>
+                      </select>
+                    </label>
                   </div>
 
-                  <label className="mt-4 block">
-                    <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                      Services / products interested
-                    </span>
-                    <select
-                      name="product"
-                      value={form.product}
-                      onChange={onChange}
-                      className="mt-2 w-full appearance-none rounded-xl border border-ink/12 bg-ink/[0.04] px-4 py-3 text-[0.92rem] text-ink transition-colors duration-300 focus:border-cyan-brand/70 focus:outline-none"
-                    >
-                      <option value="" className="bg-white">Select a product…</option>
-                      {products.map((p) => (
-                        <option key={p.slug} value={p.name} className="bg-white">{p.name}</option>
-                      ))}
-                      <option value="Shade card" className="bg-white">Shade card</option>
-                      <option value="Other" className="bg-white">Something else</option>
-                    </select>
-                  </label>
-
-                  <label className="mt-4 block">
+                  <label className="mt-3 block">
                     <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Message</span>
                     <textarea
                       name="message"
-                      rows={3}
+                      rows={2}
                       value={form.message}
                       onChange={onChange}
                       placeholder="Tell us about your requirement…"
@@ -243,7 +243,7 @@ export default function EnquiryPopup() {
                     />
                   </label>
 
-                  <Button type="submit" className="mt-6 w-full">
+                  <Button type="submit" className="mt-5 w-full">
                     Submit <Arrow />
                   </Button>
                 </form>
