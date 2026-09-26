@@ -31,7 +31,7 @@ const releaseAgents = {
   slug: 'release-agents',
   name: 'Release Agents',
   accent: '#00bffe',
-  image: IMG('p-release'),
+  image: '/assets/img/Release-Agents.avif',
   hero: {
     title: 'Advanced Release Solutions for PU Moulding',
     hl: 'PU Moulding',
@@ -1298,7 +1298,7 @@ const solvents = {
         {
           id: 'mcl',
           t: 'MCL',
-          img: IMG('p-mcl'),
+          img: '/assets/img/MCL-Solvents.avif',
           d: [
             'MCL is included in the available solvent range for footwear chemical applications. Manufacturers can enquire about MCL according to their specific production requirements and intended application.',
             'When selecting MCL, the footwear manufacturing process, application method and required chemical characteristics should be communicated so that the appropriate product requirement can be understood.',

@@ -171,7 +171,7 @@ export const products = [
      here stays deliberately factual and points the visitor to the data sheet. */
   {
     slug: 'mcl',
-    image: '/assets/img/p-mcl.webp',
+    image: '/assets/img/MCL-Solvents.avif',
     name: 'MCL',
     short: 'MCL',
     category: 'solvents',
@@ -224,7 +224,7 @@ export const products = [
   {
     slug: 'bc',
     image: '/assets/img/p-bc.webp',
-    name: 'BC',
+    name: 'Butyl cellosolve',
     short: 'BC',
     category: 'solvents',
     accent: '#fc0065',
@@ -274,7 +274,7 @@ export const company = {
     pin: '110040',
     country: 'India',
   },
-  phones: ['+91 81302 43046', '+91 98398 30808', '+91 95990 78709', '+91 96546 88447'],
+  phones: ['+91 81302 43046'],
   email: 'turbotechchemicals@gmail.com',
   website: 'www.turbotechchemicals.com',
   tagline: 'A Complete Solution for P.U., PVC & EVA Footwear',
