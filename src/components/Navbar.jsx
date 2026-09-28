@@ -20,7 +20,7 @@ export function Wordmark({ className = '' }) {
       <span className="font-display text-[clamp(0.95rem,1.5vw,1.3rem)] font-extrabold tracking-[0.02em] text-ink">
         TURBOTECH
       </span>
-      <span className="mt-0.5 text-[clamp(0.36rem,0.55vw,0.5rem)] font-semibold uppercase tracking-[0.3em] text-blue-brand/80">
+      <span className="mt-0.5 text-[clamp(0.476rem,0.727vw,0.661rem)] font-semibold uppercase tracking-[0.3em] text-blue-brand/80">
         By Nirmal Industries
       </span>
     </span>
