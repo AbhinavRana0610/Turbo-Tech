@@ -3,11 +3,11 @@ import { useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { Arrow, Button, Field } from './ui'
 import { company, products } from '../data/products'
+import { sendEnquiry } from './sendEnquiry'
 
 /* Enquiry form that pops up on the home page once the visitor has scrolled past two
    sections. It shows once per page view, and stops for the rest of the session once an enquiry is submitted.
-   Like the Contact page there is no backend: Submit hands the enquiry to the
-   visitor's mail app, pre-filled. */
+   Submit posts the enquiry to the /api/send-mail function, which emails it. */
 
 const EMPTY = { name: '', email: '', phone: '', product: '', message: '' }
 const SENT_KEY = 'tt-enquiry-sent'
@@ -64,6 +64,9 @@ export default function EnquiryPopup() {
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const [trap, setTrap] = useState('')
   const firstField = useRef(null)
 
   // Home page only.
@@ -108,21 +111,14 @@ export default function EnquiryPopup() {
     return Object.keys(e).length === 0
   }
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    if (!validate()) return
-    const body = [
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      `Phone: ${form.phone}`,
-      form.product && `Product of interest: ${form.product}`,
-      '',
-      form.message,
-    ]
-      .filter(Boolean)
-      .join('\n')
-    const subject = `Enquiry${form.product ? ` — ${form.product}` : ''} | ${form.name}`
-    window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    if (sending || !validate()) return
+    setSending(true)
+    setFailed(false)
+    const ok = await sendEnquiry({ ...form, formSource: 'Enquiry Popup', website: trap })
+    setSending(false)
+    if (!ok) return setFailed(true)
     setSent(true)
     markSent()
     setSubmitted(true)
@@ -180,15 +176,10 @@ export default function EnquiryPopup() {
                     </svg>
                   </span>
                   <h2 id="enquiry-title" className="mt-5 font-display text-[clamp(1.15rem,2.4vw,1.6rem)] font-extrabold text-ink">
-                    Your enquiry is ready to send.
+                    Thank you, your enquiry has been sent.
                   </h2>
                   <p className="mx-auto mt-3 max-w-md text-[0.9rem] leading-relaxed text-slate-500 pretty">
-                    We have handed it to your mail app with everything filled in. If nothing opened,
-                    write to us directly at{' '}
-                    <a href={`mailto:${company.email}`} className="font-semibold text-blue-brand underline-offset-4 hover:underline">
-                      {company.email}
-                    </a>
-                    .
+                    Our team will get back to you shortly.
                   </p>
                   <button
                     type="button"
@@ -243,7 +234,29 @@ export default function EnquiryPopup() {
                     />
                   </label>
 
-                  <Button type="submit" className="mt-5 w-full">
+                  {/* Honeypot for spam bots: off screen, people never fill it */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={trap}
+                    onChange={(e) => setTrap(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute -left-[9999px] h-px w-px opacity-0"
+                  />
+
+                  {failed && (
+                    <p role="alert" className="mt-4 text-[0.8rem] font-medium text-magenta-soft">
+                      Something went wrong. Please try again, or write to us at{' '}
+                      <a href={`mailto:${company.email}`} className="font-semibold underline underline-offset-4">
+                        {company.email}
+                      </a>
+                      .
+                    </p>
+                  )}
+
+                  <Button type="submit" disabled={sending} className="mt-5 w-full disabled:pointer-events-none disabled:opacity-60">
                     Submit <Arrow />
                   </Button>
                 </form>

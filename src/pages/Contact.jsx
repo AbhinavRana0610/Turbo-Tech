@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Arrow, Button, Card, Eyebrow, Field, Reveal, Stagger, stagItem } from '../components/ui'
 import { company, products } from '../data/products'
+import { sendEnquiry } from '../components/sendEnquiry'
 
-/* No backend on this build: the form validates in the browser and then hands
-   the enquiry to the visitor's mail client or WhatsApp, pre-filled. */
+/* The form validates in the browser. Send enquiry posts it to the /api/send-mail
+   function, which emails it; Send on WhatsApp opens WhatsApp, pre-filled. */
 
 const EMPTY = { name: '', company: '', email: '', phone: '', product: '', message: '' }
 
@@ -12,6 +13,9 @@ export default function Contact() {
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const [trap, setTrap] = useState('')
 
   const onChange = (e) => {
     const { name, value } = e.target
@@ -46,19 +50,22 @@ export default function Contact() {
       .filter(Boolean)
       .join('\n')
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    if (!validate()) return
-    const subject = `Enquiry${form.product ? ` — ${form.product}` : ''} | ${form.name}`
-    window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(compose())}`
+    if (sending || !validate()) return
+    setSending(true)
+    setFailed(false)
+    const ok = await sendEnquiry({ ...form, formSource: 'Contact Page Form', website: trap })
+    setSending(false)
+    if (!ok) return setFailed(true)
     setSent(true)
   }
 
+  // WhatsApp only opens a pre-filled chat, so the form stays: nothing is sent yet.
   const whatsapp = () => {
     if (!validate()) return
     const num = company.phones[0].replace(/[^\d]/g, '')
     window.open(`https://wa.me/${num}?text=${encodeURIComponent(compose())}`, '_blank', 'noopener')
-    setSent(true)
   }
 
   return (
@@ -139,15 +146,10 @@ export default function Contact() {
                     </svg>
                   </span>
                   <h2 className="mt-5 font-display text-[clamp(1.15rem,2.4vw,1.75rem)] font-extrabold text-ink">
-                    Your enquiry is ready to send.
+                    Thank you, your enquiry has been sent.
                   </h2>
                   <p className="mx-auto mt-3 max-w-md text-[0.9rem] leading-relaxed text-slate-500 pretty">
-                    We have handed it to your mail app with everything filled in. If nothing opened,
-                    write to us directly at{' '}
-                    <a href={`mailto:${company.email}`} className="font-semibold text-blue-brand underline-offset-4 hover:underline">
-                      {company.email}
-                    </a>
-                    .
+                    Our team will get back to you shortly.
                   </p>
                   <button
                     onClick={() => { setSent(false); setForm(EMPTY) }}
@@ -210,8 +212,30 @@ export default function Contact() {
                     )}
                   </label>
 
+                  {/* Honeypot for spam bots: off screen, people never fill it */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={trap}
+                    onChange={(e) => setTrap(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute -left-[9999px] h-px w-px opacity-0"
+                  />
+
+                  {failed && (
+                    <p role="alert" className="mt-5 text-[0.8rem] font-medium text-magenta-soft">
+                      Something went wrong. Please try again, or write to us at{' '}
+                      <a href={`mailto:${company.email}`} className="font-semibold underline underline-offset-4">
+                        {company.email}
+                      </a>
+                      .
+                    </p>
+                  )}
+
                   <div className="mt-7 flex flex-wrap gap-3">
-                    <Button type="submit">
+                    <Button type="submit" disabled={sending} className="disabled:pointer-events-none disabled:opacity-60">
                       Send enquiry <Arrow />
                     </Button>
                     <Button type="button" variant="ghost" onClick={whatsapp}>
@@ -220,8 +244,8 @@ export default function Contact() {
                   </div>
 
                   <p className="mt-5 text-[0.72rem] leading-relaxed text-slate-500">
-                    This form opens your own mail app or WhatsApp with the details filled in — nothing
-                    is stored on this website.
+                    Send enquiry emails your details straight to our team. Send on WhatsApp opens
+                    WhatsApp with them filled in.
                   </p>
                 </form>
               )}
