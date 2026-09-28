@@ -1,4 +1,5 @@
-import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { Arrow, Button, Card, Eyebrow, Reveal, SectionHeading, Stagger, stagItem } from '../components/ui'
 import { company, industries } from '../data/products'
 
@@ -33,9 +34,120 @@ const CAPABILITIES = [
   { t: 'Solvents & Auxiliaries', d: 'MCL, Hardener, DMF, Mould Cleaner and BC.' },
 ]
 
+/* The certificate section (details, links and the certificate) in a popup. Locks the page behind it (Lenis too), closes on
+   Escape, the backdrop or the close button. */
+function CertificateModal({ open, onClose }) {
+  useEffect(() => {
+    if (!open) return
+    const root = document.documentElement
+    root.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    window.__lenis?.stop()
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => {
+      root.style.overflow = ''
+      document.body.style.overflow = ''
+      window.__lenis?.start()
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [open, onClose])
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="certificate"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="GST registration certificate"
+        >
+          <div className="absolute inset-0 bg-ink/60 backdrop-blur-sm" onClick={onClose} />
+          <motion.div
+            data-lenis-prevent
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.98 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="relative max-h-[92dvh] w-full max-w-5xl overflow-y-auto overscroll-contain rounded-2xl lg:flex lg:overflow-hidden bg-white shadow-[0_30px_80px_-30px_rgba(10,31,68,0.7)]"
+          >
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close certificate"
+              className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow transition-colors hover:text-ink"
+            >
+              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+            {/* Details. Side by side with the certificate from lg up, so the whole
+                popup fits the screen; stacked (certificate below) on smaller screens. */}
+            <div className="flex flex-col items-start justify-center p-[clamp(1.25rem,3vw,2.25rem)] lg:min-w-0 lg:flex-1 lg:overflow-y-auto">
+              <Eyebrow>Certified</Eyebrow>
+              <h2 className="mt-4 pr-10 font-display text-[clamp(1.4rem,2.6vw,2rem)] font-extrabold leading-[1.08] tracking-tight balance">
+                Registered, on record, <span className="text-gradient">easy to verify.</span>
+              </h2>
+              <p className="mt-3 text-[clamp(0.88rem,0.4vw+0.8rem,1rem)] leading-relaxed text-slate-600/85 pretty">
+                {`${company.legal} is registered under the Goods and Services Tax Act, 2017. The registration certificate is below — check the GSTIN against the government portal before you place your first order.`}
+              </p>
+
+              <div className="mt-6 grid w-full gap-px overflow-hidden rounded-2xl border border-ink/10 bg-ink/8 min-[480px]:grid-cols-2">
+                {[
+                  { k: 'GSTIN', v: company.gstin },
+                  { k: 'Trade name', v: company.legal },
+                  { k: 'Registered from', v: company.gstRegisteredFrom },
+                  { k: 'Registration type', v: `${company.gstType} · ${company.constitution}` },
+                ].map((f) => (
+                  <div key={f.k} className="bg-white/90 p-[clamp(0.9rem,1.8vw,1.25rem)]">
+                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate-500">{f.k}</p>
+                    <p className="mt-1.5 font-display text-[clamp(0.9rem,0.6vw+0.75rem,1.08rem)] font-bold break-words text-ink">{f.v}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button href="/assets/certificates/gst-registration-certificate.pdf" target="_blank" rel="noreferrer">
+                  View certificate <Arrow />
+                </Button>
+                <Button
+                  href="https://services.gst.gov.in/services/searchtp"
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="ghost"
+                >
+                  Verify on GST portal
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center bg-ink/[0.04] p-4 lg:order-first lg:shrink-0 lg:p-5">
+              <img
+                src="/assets/certificates/gst-certificate.webp"
+                alt="GST registration certificate (Form GST REG-06) for Nirmal Industries"
+                decoding="async"
+                className="aspect-[1100/1557] w-full max-w-md rounded-lg border border-ink/10 bg-white object-contain shadow-[0_18px_40px_-24px_rgba(10,31,68,0.5)] lg:h-[calc(92dvh-2.5rem)] lg:w-auto lg:max-w-none"
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 export default function About() {
+  const [certOpen, setCertOpen] = useState(false)
+  const closeCert = () => setCertOpen(false)
+
   return (
     <>
+      <CertificateModal open={certOpen} onClose={closeCert} />
       {/* Hero */}
       <section className="shell grid items-center gap-[clamp(2rem,5vw,4rem)] pt-[clamp(7rem,15vw,11rem)] pb-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1.1fr_0.9fr]">
         <div>
@@ -64,6 +176,12 @@ export default function About() {
             </Button>
             <Button href="/assets/turbotech-brochure.pdf" target="_blank" rel="noreferrer" variant="ghost">
               Download brochure
+            </Button>
+            <Button type="button" onClick={() => setCertOpen(true)} variant="ghost">
+              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-blue-brand" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z M8.8 12.2l2.2 2.2 4.4-4.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              View Certificate
             </Button>
           </div>
         </Reveal>
