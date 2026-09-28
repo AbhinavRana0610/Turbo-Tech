@@ -190,7 +190,51 @@ const THE_RIGHT = [
 
 const PHONES = ['+91 8130243046']
 
+/* Client logos, in public/assets/clients/. The name is the logo's alt text. */
+const CLIENTS = [
+  { name: 'APLON', logo: '/assets/clients/aplon.avif' },
+  { name: 'Bata', logo: '/assets/clients/bata.avif' },
+  { name: 'BigHorn Shoes', logo: '/assets/clients/bighorn.avif' },
+  { name: 'Dr. Ortho', logo: '/assets/clients/dr-ortho.avif' },
+  { name: 'Druk', logo: '/assets/clients/druk.avif' },
+  { name: 'iD', logo: '/assets/clients/id.avif' },
+  { name: 'Lakhani Shoes', logo: '/assets/clients/lakhani.avif' },
+  { name: 'Lancer Footwear', logo: '/assets/clients/lancer.avif' },
+  { name: 'Liberty', logo: '/assets/clients/liberty.avif' },
+  { name: 'Poonam', logo: '/assets/clients/poonam.avif' },
+  { name: 'R-Time', logo: '/assets/clients/r-time.avif' },
+  { name: 'Red Bird', logo: '/assets/clients/red-bird.avif' },
+  { name: 'Relic Footwear', logo: '/assets/clients/relic.avif' },
+  { name: 'Rimco', logo: '/assets/clients/rimco.avif' },
+  { name: 'Star Kidz', logo: '/assets/clients/star-kids.avif' },
+  { name: 'Today', logo: '/assets/clients/today.avif' },
+  { name: 'TRV Sports', logo: '/assets/clients/trv.avif' },
+  { name: 'Walkaroo', logo: '/assets/clients/walkaroo.avif' },
+  { name: 'Warrior', logo: '/assets/clients/warrior-1.avif' },
+  { name: 'Envy Warrior', logo: '/assets/clients/warrior-2.avif' },
+  { name: 'Winger', logo: '/assets/clients/winger.avif' },
+]
+
 /* ------------------------------------------------------------------ */
+
+/* One client logo on a white tile; an empty tile until the file exists. */
+function ClientLogo({ name, logo }) {
+  const [missing, setMissing] = useState(false)
+  return (
+    <div className="flex aspect-[3/2] items-center justify-center rounded-2xl border border-ink/10 bg-white p-[clamp(0.6rem,1.6vw,1.25rem)] shadow-[0_18px_40px_-28px_rgba(10,31,68,0.45)] transition-[transform,box-shadow] duration-500 hover:-translate-y-1 hover:shadow-[0_24px_50px_-26px_rgba(10,31,68,0.55)]">
+      {!missing && (
+        <img
+          src={logo}
+          alt={name}
+          loading="lazy"
+          decoding="async"
+          onError={() => setMissing(true)}
+          className="max-h-full max-w-full object-contain"
+        />
+      )}
+    </div>
+  )
+}
 
 /* Horizontal, snap-scrolling image cards with arrow controls. */
 function ImageRail({ items }) {
@@ -354,7 +398,7 @@ export default function Home() {
   return (
     <>
       {/* ------------------------------------------------------ 01 HERO */}
-      <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[clamp(5.5rem,12vw,8rem)] pb-[clamp(2rem,6vw,4rem)]">
+      <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[clamp(5.5rem,12vw,8rem)] pb-[clamp(1.7rem,5.1vw,3.4rem)]">
         <div className="shell grid items-center gap-[clamp(1.5rem,4vw,3rem)] lg:grid-cols-[1.05fr_0.95fr]">
           {/* Copy */}
           <div className="relative z-10 order-2 lg:order-1">
@@ -457,7 +501,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 02 INTRODUCTION */}
-      <section className="shell py-[clamp(3rem,8vw,7rem)]">
+      <section className="shell py-[clamp(2.55rem,6.8vw,5.95rem)]">
         <div className="grid items-center gap-[clamp(2.5rem,5vw,4.5rem)] lg:grid-cols-2">
           <Reveal className="relative">
             <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] border border-ink/10 shadow-[0_30px_70px_-35px_rgba(10,31,68,0.45)]">
@@ -505,88 +549,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------- CERTIFICATE */}
-      <section className="shell py-[clamp(2rem,6vw,5rem)]">
-        <div className="grid items-center gap-[clamp(2.5rem,6vw,5rem)] lg:grid-cols-[1fr_0.8fr]">
-          <div>
-            <SectionHeading
-              eyebrow="Certified"
-              title={<>Registered, on record, <span className="text-gradient">easy to verify.</span></>}
-              sub={`${company.legal} is registered under the Goods and Services Tax Act, 2017. The registration certificate is below — check the GSTIN against the government portal before you place your first order.`}
-            />
-
-            <Stagger className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-ink/10 bg-ink/8 min-[480px]:grid-cols-2">
-              {[
-                { k: 'GSTIN', v: company.gstin },
-                { k: 'Trade name', v: company.legal },
-                { k: 'Registered from', v: company.gstRegisteredFrom },
-                { k: 'Registration type', v: `${company.gstType} · ${company.constitution}` },
-              ].map((f) => (
-                <motion.div key={f.k} variants={stagItem} className="bg-white/90 p-[clamp(0.9rem,1.8vw,1.25rem)]">
-                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate-500">{f.k}</p>
-                  <p className="mt-1.5 font-display text-[clamp(0.9rem,0.6vw+0.75rem,1.08rem)] font-bold break-words text-ink">{f.v}</p>
-                </motion.div>
-              ))}
-            </Stagger>
-
-            <Reveal delay={0.1} className="mt-8 flex flex-wrap gap-3">
-              <Button href="/assets/certificates/gst-registration-certificate.pdf" target="_blank" rel="noreferrer">
-                View certificate <Arrow />
-              </Button>
-              <Button
-                href="https://services.gst.gov.in/services/searchtp"
-                target="_blank"
-                rel="noreferrer"
-                variant="ghost"
-              >
-                Verify on GST portal
-              </Button>
-            </Reveal>
-          </div>
-
-          {/* Certificate preview */}
-          <Reveal delay={0.12}>
-            <a
-              href="/assets/certificates/gst-registration-certificate.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="group relative mx-auto block max-w-[26rem] [perspective:1400px]"
-              aria-label="Open the GST registration certificate"
-            >
-              {/* stacked sheets behind */}
-              <span className="absolute inset-0 translate-x-3 translate-y-3 rotate-[4deg] rounded-xl border border-ink/10 bg-white/70 transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-5 group-hover:rotate-[7deg]" />
-              <span className="absolute inset-0 -translate-x-2 translate-y-1.5 -rotate-[3deg] rounded-xl border border-ink/10 bg-white/80 transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-x-4 group-hover:-rotate-[5deg]" />
-
-              <div className="relative overflow-hidden rounded-xl border border-ink/10 bg-white shadow-[0_40px_80px_-40px_rgba(10,31,68,0.55)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] [transform:rotateX(6deg)_rotateY(-8deg)] group-hover:[transform:rotateX(0deg)_rotateY(0deg)_translateY(-6px)]">
-                <img
-                  src="/assets/certificates/gst-certificate.webp"
-                  alt="GST registration certificate (Form GST REG-06) for Nirmal Industries"
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[1100/1557] w-full object-cover"
-                />
-                <span className="shimmer pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </div>
-
-              {/* seal */}
-              <span className="absolute -bottom-5 -left-4 flex items-center gap-2.5 rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-[0_18px_40px_-20px_rgba(10,31,68,0.4)] backdrop-blur sm:-left-8">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-deep via-blue-brand to-cyan-brand text-white">
-                  <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
-                    <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z M8.8 12.2l2.2 2.2 4.4-4.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                <span>
-                  <span className="block font-display text-sm font-bold leading-tight text-ink">GST REG-06</span>
-                  <span className="block text-[0.64rem] uppercase tracking-[0.14em] text-slate-500">Government of India</span>
-                </span>
-              </span>
-            </a>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ---------------------------------------------------- 03 PRODUCTS */}
-      <section className="shell py-[clamp(3rem,8vw,7rem)]">
+      <section className="shell py-[clamp(2.55rem,6.8vw,5.95rem)]">
         <SectionHeading
           align="center"
           title={<>Complete Solutions for <span className="text-gradient">P.U., PVC &amp; EVA</span></>}
@@ -625,7 +589,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 04 WHY TURBOTECH */}
-      <section id="why-turbotech" className="shell scroll-mt-24 py-[clamp(3rem,8vw,7rem)]">
+      <section id="why-turbotech" className="shell scroll-mt-24 py-[clamp(2.55rem,6.8vw,5.95rem)]">
         <SectionHeading
           title={<>More Than Chemicals. <span className="text-gradient">Solutions for Better Manufacturing.</span></>}
           sub="Every manufacturing process has its own requirements. That's why Turbotech focuses on solutions that address practical production needs — from colour and mould release to adhesion, finish and material performance."
@@ -649,7 +613,7 @@ export default function Home() {
       </section>
 
       {/* ---------------------------------------- 05 PROBLEM / SOLUTION */}
-      <section className="shell py-[clamp(3rem,8vw,7rem)]">
+      <section className="shell py-[clamp(2.55rem,6.8vw,5.95rem)]">
         <SectionHeading
           title={<>Every Production Challenge Needs <span className="text-gradient">the Right Chemistry.</span></>}
         />
@@ -690,7 +654,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 06 APPLICATIONS */}
-      <section id="applications" className="shell scroll-mt-24 py-[clamp(3rem,8vw,7rem)]">
+      <section id="applications" className="shell scroll-mt-24 py-[clamp(2.55rem,6.8vw,5.95rem)]">
         <SectionHeading
           title={<>Made for the <span className="text-gradient">Footwear Industry</span></>}
           sub="From everyday footwear to demanding industrial applications, Turbotech solutions are designed to support a wide range of footwear manufacturing requirements."
@@ -699,7 +663,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 07 PERFORMANCE */}
-      <section className="shell py-[clamp(3rem,8vw,7rem)]">
+      <section className="shell py-[clamp(2.55rem,6.8vw,5.95rem)]">
         <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.9fr_1.1fr]">
           <div className="lg:sticky lg:top-28">
             <SectionHeading
@@ -748,7 +712,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 08 BRAND STORY */}
-      <section className="relative overflow-hidden py-[clamp(3.5rem,9vw,8rem)]">
+      <section className="relative overflow-hidden py-[clamp(2.975rem,7.65vw,6.8rem)]">
         <img
           src="/assets/img/process-sole-machine.webp"
           alt=""
@@ -785,7 +749,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 09 VISUAL CTA */}
-      <section className="shell py-[clamp(3rem,7vw,6rem)]">
+      <section className="shell py-[clamp(2.55rem,5.95vw,5.1rem)]">
         <Reveal>
           <div className="group relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] shadow-[0_40px_80px_-40px_rgba(10,31,68,0.6)]">
             <img
@@ -821,7 +785,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 10 CONTACT */}
-      <section className="shell py-[clamp(3rem,7vw,6rem)]">
+      <section className="shell py-[clamp(2.55rem,5.95vw,5.1rem)]">
         <div className="grid items-center gap-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1fr_1fr]">
           <div>
             <SectionHeading
@@ -890,10 +854,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ------------------------------------------------ 10b CLIENTS */}
+      <section className="shell py-[clamp(2.55rem,5.95vw,5.1rem)]">
+        <SectionHeading
+          align="center"
+          title={<>Our Prestigious <span className="text-gradient">Clients</span></>}
+        />
+
+        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] grid grid-cols-3 gap-3 sm:gap-4 lg:grid-cols-7" gap={0.04}>
+          {CLIENTS.map((c) => (
+            <motion.div key={c.logo} variants={stagItem}>
+              <ClientLogo {...c} />
+            </motion.div>
+          ))}
+        </Stagger>
+      </section>
+
       {/* ---------------------------------------------------- 11 FINAL CTA
           Dark blue, and with half the usual breathing room: the negative bottom
           margin eats half of the footer's top margin. */}
-      <section className="shell py-[clamp(1rem,2.5vw,2rem)] -mb-[clamp(2rem,5vw,4.5rem)]">
+      <section className="shell py-[clamp(0.85rem,2.125vw,1.7rem)] -mb-[clamp(2rem,5vw,4.5rem)]">
         <Reveal>
           <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy px-[clamp(1.25rem,4vw,4rem)] py-[clamp(2.5rem,6vw,5rem)] text-center shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
             <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)] blur-2xl" />
