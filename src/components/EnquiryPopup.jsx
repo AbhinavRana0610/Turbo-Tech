@@ -4,9 +4,8 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Arrow, Button, Field } from './ui'
 import { company, products } from '../data/products'
 
-/* Enquiry form that pops up on every page once the visitor has scrolled far enough:
-   past two sections, or past one on pages with three sections or fewer. It shows once
-   per page view, and stops for the rest of the session once an enquiry is submitted.
+/* Enquiry form that pops up on the home page once the visitor has scrolled past two
+   sections. It shows once per page view, and stops for the rest of the session once an enquiry is submitted.
    Like the Contact page there is no backend: Submit hands the enquiry to the
    visitor's mail app, pre-filled. */
 
@@ -67,7 +66,8 @@ export default function EnquiryPopup() {
   const [sent, setSent] = useState(false)
   const firstField = useRef(null)
 
-  useSectionTrigger(() => setOpen(true), !submitted)
+  // Home page only.
+  useSectionTrigger(() => setOpen(true), !submitted && pathname === '/')
 
   // A new page starts closed; its own scroll decides when the popup shows.
   useEffect(() => setOpen(false), [pathname])

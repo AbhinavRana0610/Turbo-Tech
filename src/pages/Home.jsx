@@ -72,7 +72,7 @@ const PRODUCTS = [
     ],
     cta: 'Explore Release Agents',
     to: '/products/release-agents',
-    image: '/assets/img/p-release.webp',
+    image: '/assets/img/Release-Agents.avif',
     accent: '#00bffe',
   },
   {
