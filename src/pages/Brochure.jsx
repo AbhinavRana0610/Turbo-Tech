@@ -13,26 +13,6 @@ const PAGES = [
   { src: '/assets/brochure/page-4.webp', t: 'Packing & contact', d: 'Where to reach us.' },
 ]
 
-/* Third-party lab reports, shown whole: the lab allows reproduction only in full,
-   so the cards link to the complete PDFs rather than excerpts. */
-const REPORTS = [
-  {
-    pdf: '/assets/test-reports/bfds-24061130-release-agent.pdf',
-    thumb: '/assets/test-reports/bfds-24061130-release-agent.webp',
-    t: 'Release Agent',
-    colour: 'Transparent',
-    no: 'BFDS-24061130',
-  },
-  {
-    pdf: '/assets/test-reports/bfds-24061131-pigment.pdf',
-    thumb: '/assets/test-reports/bfds-24061131-pigment.webp',
-    t: 'Pigment',
-    colour: 'Black',
-    no: 'BFDS-24061131',
-  },
-]
-const TESTS = ['Organotin compound', 'Phthalate', 'DMFU', 'Lead content']
-
 export default function Brochure() {
   const [page, setPage] = useState(0)
   const [dir, setDir] = useState(1)
@@ -85,8 +65,9 @@ export default function Brochure() {
         </Reveal>
       </section>
 
-      {/* Viewer */}
-      <section className="shell pb-[clamp(3rem,8vw,7rem)] pt-[clamp(1rem,2.5vw,2rem)]">
+      {/* Viewer. The gap below it is this padding plus the footer's top margin
+          (clamp(4rem,10vw,9rem), shared by every page); the padding alone takes 20% off the sum. */}
+      <section className="shell pb-[calc(clamp(3rem,8vw,7rem)*0.8-clamp(4rem,10vw,9rem)*0.2)] pt-[clamp(1rem,2.5vw,2rem)]">
         <div className="grid gap-[clamp(1.25rem,3vw,2.5rem)] lg:grid-cols-[1fr_17rem]">
           {/* Current page */}
           <Reveal>
@@ -169,67 +150,6 @@ export default function Brochure() {
               ))}
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      {/* Test reports */}
-      <section className="shell pb-[clamp(3rem,8vw,7rem)]">
-        <Reveal>
-          <Eyebrow>Test reports</Eyebrow>
-        </Reveal>
-        <Reveal delay={0.06}>
-          <h2 className="mt-5 max-w-3xl font-display text-[clamp(1.5rem,4vw,2.75rem)] font-extrabold leading-[1.08] tracking-[-0.02em] balance">
-            Lab-tested by <span className="text-gradient">BFDS.</span>
-          </h2>
-        </Reveal>
-        <Reveal delay={0.12}>
-          <p className="mt-4 max-w-2xl text-[clamp(0.9rem,0.6vw+0.8rem,1.05rem)] leading-relaxed text-slate-600/85 pretty">
-            Test reports from Bahadurgarh Footwear Development Services, dated 13-06-2024.
-          </p>
-        </Reveal>
-
-        <div className="mt-[clamp(1.5rem,3vw,2.5rem)] grid gap-[clamp(1rem,2.5vw,1.75rem)] md:grid-cols-2">
-          {REPORTS.map((r, i) => (
-            <Reveal key={r.no} delay={0.08 * i}>
-              <div className="glass flex h-full flex-col gap-4 rounded-[clamp(1rem,2vw,1.75rem)] p-[clamp(0.9rem,2vw,1.5rem)] min-[480px]:flex-row">
-                <a
-                  href={r.pdf}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`Open ${r.t} test report`}
-                  className="group block shrink-0 overflow-hidden rounded-xl bg-white shadow-[0_20px_45px_-28px_rgba(10,31,68,0.5)] min-[480px]:w-[11.4rem]"
-                >
-                  <img
-                    src={r.thumb}
-                    alt={`${r.t} test report ${r.no}, page 1`}
-                    loading="lazy"
-                    className="aspect-[910/1287] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </a>
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-blue-brand">{r.no}</span>
-                  <h3 className="mt-1 font-display text-[clamp(1.05rem,1vw+0.8rem,1.3rem)] font-bold text-ink">{r.t}</h3>
-                  <p className="mt-0.5 text-xs text-slate-500">Colour: {r.colour}</p>
-                  <ul className="mt-3 grid gap-1.5">
-                    {TESTS.map((t) => (
-                      <li key={t} className="flex items-center justify-between gap-3 rounded-lg border border-ink/8 bg-white/60 px-3 py-1.5 text-[0.78rem] text-ink">
-                        {t}
-                        <span className="text-[0.66rem] font-bold uppercase tracking-[0.12em] text-emerald-600">Pass</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Button href={r.pdf} target="_blank" rel="noreferrer" className="!px-4 !py-2 text-[0.8rem]">
-                      View PDF
-                    </Button>
-                    <Button href={r.pdf} download={`Turbotech-${r.no}.pdf`} variant="ghost" className="!px-4 !py-2 text-[0.8rem]">
-                      Download <Arrow className="rotate-90" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          ))}
         </div>
       </section>
     </>
