@@ -613,7 +613,7 @@ function Cards({ s, n, accent }) {
   if (s.layout === 'products') return <SolventProducts s={s} n={n} accent={accent} />
 
   const cols = s.compact
-    ? 'min-[480px]:grid-cols-2 lg:grid-cols-4'
+    ? 'min-[480px]:grid-cols-2 lg:grid-cols-3'
     : s.cols === 2
       ? 'md:grid-cols-2'
       : s.layout === 'swatch'
@@ -1502,11 +1502,12 @@ function Conclusion({ s, page }) {
   )
 }
 
-/* Links to the other product pages. */
+/* Links to the other product pages. The gap below is this padding plus the footer's top
+   margin (clamp(4rem,10vw,9rem), shared by every page); the padding alone takes 20% off the sum. */
 function MoreProducts({ page }) {
   const others = productPages.filter((p) => p.slug !== page.slug)
   return (
-    <section className="shell pb-[calc(clamp(1.7rem,4.25vw,3.4rem)*var(--sy,1))] pt-[calc(clamp(0.85rem,2.55vw,1.7rem)*var(--sy,1))]">
+    <section className="shell pb-[calc(clamp(1.7rem,4.25vw,3.4rem)*var(--sy,1)*0.8-clamp(4rem,10vw,9rem)*0.2)] pt-[calc(clamp(0.85rem,2.55vw,1.7rem)*var(--sy,1))]">
       <Reveal>
         <p className="text-center text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Explore Our Products</p>
       </Reveal>
