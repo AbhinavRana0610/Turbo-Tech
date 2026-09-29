@@ -421,7 +421,7 @@ export default function Home() {
   return (
     <>
       {/* ------------------------------------------------------ 01 HERO */}
-      <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[clamp(5.5rem,12vw,8rem)] pb-[clamp(1.7rem,5.1vw,3.4rem)]">
+      <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[clamp(5.5rem,12vw,8rem)] pb-[clamp(1.53rem,4.59vw,3.06rem)]">
         <div className="shell grid items-center gap-[clamp(1.5rem,4vw,3rem)] lg:grid-cols-[1.05fr_0.95fr]">
           {/* Copy */}
           <div className="relative z-10 order-2 lg:order-1">
@@ -524,7 +524,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 02 INTRODUCTION */}
-      <section className="shell pt-[clamp(2.55rem,6.8vw,5.95rem)] pb-[clamp(2.295rem,6.12vw,5.355rem)]">
+      <section className="shell pt-[clamp(2.295rem,6.12vw,5.355rem)] pb-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <div className="grid items-center gap-[clamp(2.5rem,5vw,4.5rem)] lg:grid-cols-2">
           <Reveal className="relative">
             <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] border border-ink/10 shadow-[0_30px_70px_-35px_rgba(10,31,68,0.45)]">
@@ -573,7 +573,7 @@ export default function Home() {
       </section>
 
       {/* ---------------------------------------------------- 03 PRODUCTS */}
-      <section className="shell pt-[clamp(2.55rem,6.8vw,5.95rem)] pb-[clamp(2.295rem,6.12vw,5.355rem)]">
+      <section className="shell pt-[clamp(2.295rem,6.12vw,5.355rem)] pb-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <SectionHeading
           align="center"
           title={<>Complete Solutions for <span className="text-gradient">P.U., PVC &amp; EVA</span></>}
@@ -612,7 +612,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 04 WHY TURBOTECH */}
-      <section id="why-turbotech" className="shell scroll-mt-24 pt-[clamp(2.295rem,6.12vw,5.355rem)] pb-[clamp(2.295rem,6.12vw,5.355rem)]">
+      <section id="why-turbotech" className="shell scroll-mt-24 pt-[clamp(2.0655rem,5.508vw,4.8195rem)] pb-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <SectionHeading
           title={<>More Than Chemicals. <span className="text-gradient">Solutions for Better Manufacturing.</span></>}
           sub="Every manufacturing process has its own requirements. That's why Turbotech focuses on solutions that address practical production needs — from colour and mould release to adhesion, finish and material performance."
@@ -636,7 +636,7 @@ export default function Home() {
       </section>
 
       {/* ---------------------------------------- 05 PROBLEM / SOLUTION */}
-      <section className="shell py-[clamp(2.295rem,6.12vw,5.355rem)]">
+      <section className="shell py-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <SectionHeading
           title={<>Every Production Challenge Needs <span className="text-gradient">the Right Chemistry.</span></>}
         />
@@ -676,8 +676,24 @@ export default function Home() {
         </Reveal>
       </section>
 
+      {/* ------------------------------------------------ 05b CLIENTS */}
+      <section className="shell py-[clamp(2.0655rem,4.8195vw,4.131rem)]">
+        <SectionHeading
+          align="center"
+          title={<>Our Prestigious <span className="text-gradient">Clients</span></>}
+        />
+
+        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] mx-auto grid w-[90%] grid-cols-3 gap-[0.675rem] sm:gap-[0.9rem] lg:grid-cols-6" gap={0.04}>
+          {CLIENTS.map((c) => (
+            <motion.div key={c.logo} variants={stagItem}>
+              <ClientLogo {...c} />
+            </motion.div>
+          ))}
+        </Stagger>
+      </section>
+
       {/* ------------------------------------------------ 06 APPLICATIONS */}
-      <section id="applications" className="shell scroll-mt-24 py-[clamp(2.295rem,6.12vw,5.355rem)]">
+      <section id="applications" className="shell scroll-mt-24 py-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <SectionHeading
           title={<>Made for the <span className="text-gradient">Footwear Industry</span></>}
           sub="From everyday footwear to demanding industrial applications, Turbotech solutions are designed to support a wide range of footwear manufacturing requirements."
@@ -686,7 +702,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 07 PERFORMANCE */}
-      <section className="shell py-[clamp(2.295rem,6.12vw,5.355rem)]">
+      <section className="shell py-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.9fr_1.1fr]">
           <div className="lg:sticky lg:top-28">
             <SectionHeading
@@ -735,7 +751,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 08 BRAND STORY */}
-      <section className="relative overflow-hidden py-[clamp(2.6775rem,6.885vw,6.12rem)]">
+      <section className="relative overflow-hidden py-[clamp(2.4098rem,6.1965vw,5.508rem)]">
         <img
           src="/assets/img/process-sole-machine.webp"
           alt=""
@@ -772,7 +788,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 09 VISUAL CTA */}
-      <section className="shell py-[clamp(2.295rem,5.355vw,4.59rem)]">
+      <section className="shell py-[clamp(2.0655rem,4.8195vw,4.131rem)]">
         <Reveal>
           <div className="group relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] shadow-[0_40px_80px_-40px_rgba(10,31,68,0.6)]">
             <img
@@ -808,7 +824,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 10 CONTACT */}
-      <section className="shell pt-[clamp(2.295rem,5.355vw,4.59rem)] pb-[clamp(2.295rem,5.355vw,4.59rem)]">
+      <section className="shell pt-[clamp(2.0655rem,4.8195vw,4.131rem)] pb-[clamp(2.0655rem,4.8195vw,4.131rem)]">
         <div className="grid items-center gap-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1fr_1fr]">
           <div>
             <SectionHeading
@@ -878,7 +894,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------ 10a TEST REPORTS */}
-      <section className="shell pt-[clamp(2.295rem,5.355vw,4.59rem)] pb-[clamp(2.295rem,5.355vw,4.59rem)]">
+      <section className="shell pt-[clamp(2.0655rem,4.8195vw,4.131rem)] pb-[clamp(2.0655rem,4.8195vw,4.131rem)]">
         <Reveal>
           <Eyebrow>Test reports</Eyebrow>
         </Reveal>
@@ -938,26 +954,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ 10b CLIENTS */}
-      <section className="shell py-[clamp(2.295rem,5.355vw,4.59rem)]">
-        <SectionHeading
-          align="center"
-          title={<>Our Prestigious <span className="text-gradient">Clients</span></>}
-        />
-
-        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] mx-auto grid w-[90%] grid-cols-3 gap-[0.675rem] sm:gap-[0.9rem] lg:grid-cols-6" gap={0.04}>
-          {CLIENTS.map((c) => (
-            <motion.div key={c.logo} variants={stagItem}>
-              <ClientLogo {...c} />
-            </motion.div>
-          ))}
-        </Stagger>
-      </section>
-
       {/* ---------------------------------------------------- 11 FINAL CTA
           Dark blue, and with half the usual breathing room: the negative bottom
           margin eats half of the footer's top margin. */}
-      <section className="shell pt-[clamp(0.765rem,1.9125vw,1.53rem)] pb-[clamp(0.85rem,2.125vw,1.7rem)] -mb-[clamp(2rem,5vw,4.5rem)]">
+      <section className="shell pt-[clamp(0.6885rem,1.7213vw,1.377rem)] pb-[clamp(0.85rem,2.125vw,1.7rem)] -mb-[clamp(2rem,5vw,4.5rem)]">
         <Reveal>
           <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy px-[clamp(1.25rem,4vw,4rem)] py-[clamp(2.5rem,6vw,5rem)] text-center shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
             <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)] blur-2xl" />
