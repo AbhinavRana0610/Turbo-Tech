@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { ContactShadows, Environment, Float, Lightformer } from '@react-three/drei'
+import { ContactShadows, Environment, Float, Lightformer, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 
 /* ------------------------------------------------------------------
@@ -66,6 +66,11 @@ function treadTexture() {
 /* The colour story: the sole starts white and picks up pigment as you scroll. */
 const PIGMENTS = ['#eef3ff', '#00bffe', '#0072ce', '#fc0065', '#00d6a8', '#8b7dff']
 
+// Radius of the logo ball orbiting the toe, and scratch vectors for fitting the logo to it.
+const BALL_R = 0.1716
+const ballPos = new THREE.Vector3()
+const ballScale = new THREE.Vector3()
+
 function Slipper({ progress, interact, spin = true }) {
   const group = useRef()
   const tip = useRef()
@@ -112,6 +117,11 @@ function Slipper({ progress, interact, spin = true }) {
   }, [])
 
   const tread = useMemo(() => treadTexture(), [])
+  // logo-ball.png is the logo mark squared up around its circle, so the circle fills the plane.
+  const logo = useTexture('/assets/logo-ball.png')
+  logo.colorSpace = THREE.SRGBColorSpace
+  const badge = useRef()
+  const face = useRef()
 
   useFrame((state, dt) => {
     const t = state.clock.elapsedTime
@@ -155,6 +165,16 @@ function Slipper({ progress, interact, spin = true }) {
     for (const m of mats.current) if (m) m.color.lerp(target, Math.min(k * (1 + ix.pop * 3), 1))
 
     if (tip.current) tip.current.rotation.y -= dt * (0.7 + ix.pop * 7)
+
+    // The logo sits on the ball's front, nearer the camera than its centre, so perspective
+    // draws it slightly larger; shrink it back to the ball's outline.
+    if (face.current) face.current.lookAt(state.camera.position)
+    if (badge.current) {
+      badge.current.parent.getWorldPosition(ballPos)
+      const d = state.camera.position.distanceTo(ballPos)
+      const r = BALL_R * badge.current.parent.getWorldScale(ballScale).x
+      badge.current.scale.setScalar((d - r) / Math.sqrt(d * d - r * r))
+    }
   })
 
   return (
@@ -213,20 +233,22 @@ function Slipper({ progress, interact, spin = true }) {
         />
       </mesh>
 
-      {/* A pigment droplet orbiting the toe */}
+      {/* A white ball orbiting the toe, exactly the size of the logo mark printed on the
+          side facing the viewer; the logo's cut-outs show the white ball.
+          Left out of `mats` so the pigment tint never recolours it. */}
       <group ref={tip}>
-        <mesh position={[0.95, 0.75, -1.1]} castShadow>
-          <sphereGeometry args={[0.13, 32, 32]} />
-          <meshPhysicalMaterial
-            ref={(m) => (mats.current[3] = m)}
-            color="#00bffe"
-            roughness={0.1}
-            metalness={0.1}
-            clearcoat={1}
-            transmission={0.25}
-            thickness={0.5}
-          />
-        </mesh>
+        {/* Turned toward the camera itself (not just its view direction), so the logo stays
+            centred on the ball wherever the ball sits on screen. */}
+        <group ref={face} position={[0.95, 0.75, -1.1]}>
+          <mesh castShadow>
+            <sphereGeometry args={[BALL_R, 48, 48]} />
+            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.55} roughness={0.4} envMapIntensity={0.15} />
+          </mesh>
+          <mesh ref={badge} position={[0, 0, BALL_R + 0.002]}>
+            <planeGeometry args={[BALL_R * 2, BALL_R * 2]} />
+            <meshBasicMaterial map={logo} transparent alphaTest={0.05} toneMapped={false} />
+          </mesh>
+        </group>
       </group>
     </group>
   )
