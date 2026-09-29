@@ -197,7 +197,7 @@ export default function Brochure() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={`Open ${r.t} test report`}
-                  className="group block shrink-0 overflow-hidden rounded-xl bg-white shadow-[0_20px_45px_-28px_rgba(10,31,68,0.5)] min-[480px]:w-[9.5rem]"
+                  className="group block shrink-0 overflow-hidden rounded-xl bg-white shadow-[0_20px_45px_-28px_rgba(10,31,68,0.5)] min-[480px]:w-[11.4rem]"
                 >
                   <img
                     src={r.thumb}
