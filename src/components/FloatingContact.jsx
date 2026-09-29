@@ -1,18 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import { Arrow, Button, Field } from './ui'
 import { company } from '../data/products'
+import { sendEnquiry } from './sendEnquiry'
 
 /* ---------------- Config ----------------
    Every number and address the widget uses. They default to the company record so the
    site has one source of truth; override a value here to point the widget elsewhere. */
 const CONTACT = {
-  whatsapp: company.phones[0], // any format; non-digits are stripped for the links
   phone: company.phones[0],
-  email: company.email,
 }
 
 const EASE = [0.16, 1, 0.3, 1]
-const digits = (n) => n.replace(/[^\d]/g, '')
 
 /* Phones and tablets, including iPadOS, which reports itself as a Mac with touch. */
 function isMobile() {
@@ -21,46 +20,6 @@ function isMobile() {
     /Android|iPhone|iPad|iPod|Mobi|Tablet|Silk|Kindle|Opera Mini|IEMobile/i.test(ua) ||
     (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
   )
-}
-
-/* Mobile: wa.me hands off to the installed app. Desktop: try the desktop app's
-   whatsapp:// link, and open WhatsApp Web if the page never loses focus to it. */
-function openWhatsApp() {
-  const num = digits(CONTACT.whatsapp)
-  if (isMobile()) {
-    window.location.href = `https://wa.me/${num}`
-    return
-  }
-
-  let handed = false
-  const onLeave = () => { handed = true }
-  window.addEventListener('blur', onLeave)
-  document.addEventListener('visibilitychange', onLeave)
-
-  window.location.href = `whatsapp://send?phone=${num}`
-
-  // Browsers allow a popup for a few seconds after the click, so this stays unblocked.
-  setTimeout(() => {
-    window.removeEventListener('blur', onLeave)
-    document.removeEventListener('visibilitychange', onLeave)
-    if (!handed) window.open(`https://web.whatsapp.com/send?phone=${num}`, '_blank', 'noopener')
-  }, 1500)
-}
-
-/* Desktop: Gmail compose in a new tab, or mailto: if the tab is blocked.
-   Mobile: mailto: so Gmail or the default mail app picks it up. */
-function openEmail() {
-  const to = encodeURIComponent(CONTACT.email)
-  if (!isMobile()) {
-    // No 'noopener' here: with it, window.open always returns null and a blocked
-    // popup can't be told apart from an opened one.
-    const tab = window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${to}`, '_blank')
-    if (tab) {
-      tab.opener = null
-      return
-    }
-  }
-  window.location.href = `mailto:${CONTACT.email}`
 }
 
 /* ---------------- Icons ---------------- */
@@ -154,6 +113,218 @@ function CallModal({ onClose }) {
   )
 }
 
+/* ---------------- WhatsApp / Email enquiry forms ----------------
+   Same look as the home page enquiry popup. Both post to /api/send-mail (the port of
+   send-mail.php) and neither opens WhatsApp or a mail app. The field names are the ones
+   send-mail.php expects, so it labels each mail "WhatsApp Contact Form" (whatsappName)
+   or "Email Contact Form" (email) on its own. */
+const FORMS = {
+  whatsapp: {
+    Icon: WhatsAppIcon,
+    bg: '#25d366',
+    withEmail: false,
+    fields: (f) => ({ whatsappName: f.name, whatsappMobile: f.phone, message: f.message }),
+  },
+  email: {
+    Icon: MailIcon,
+    bg: '#fc0065',
+    withEmail: true,
+    fields: (f) => ({ name: f.name, email: f.email, phone: f.phone, message: f.message }),
+  },
+}
+const FORM_EMPTY = { name: '', email: '', phone: '', message: '' }
+
+function ContactFormModal({ kind, onClose }) {
+  const { Icon, bg, withEmail, fields } = FORMS[kind]
+  const [form, setForm] = useState(FORM_EMPTY)
+  const [errors, setErrors] = useState({})
+  const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const [trap, setTrap] = useState('')
+  const firstField = useRef(null)
+
+  // Lock the page behind the form (Lenis needs pausing too), close on Escape.
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    window.__lenis?.stop()
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    const t = setTimeout(() => firstField.current?.focus(), 350)
+    return () => {
+      clearTimeout(t)
+      root.style.overflow = ''
+      document.body.style.overflow = ''
+      window.__lenis?.start()
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  const onChange = (e) => {
+    const { name, value } = e.target
+    setForm((f) => ({ ...f, [name]: value }))
+    setErrors((x) => ({ ...x, [name]: undefined }))
+  }
+
+  const validate = () => {
+    const e = {}
+    if (!form.name.trim()) e.name = 'Please tell us your name.'
+    if (withEmail) {
+      if (!form.email.trim()) e.email = 'Please add your email.'
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) e.email = 'That email address does not look right.'
+    }
+    if (!form.phone.trim()) e.phone = 'Please add your phone number.'
+    else if (form.phone.replace(/[^\d]/g, '').length < 10) e.phone = 'That phone number looks too short.'
+    if (!form.message.trim()) e.message = 'Please add a message.'
+    setErrors(e)
+    return Object.keys(e).length === 0
+  }
+
+  const submit = async (e) => {
+    e.preventDefault()
+    if (sending || !validate()) return
+    setSending(true)
+    setFailed(false)
+    const ok = await sendEnquiry({ ...fields(form), website: trap })
+    setSending(false)
+    if (!ok) return setFailed(true)
+    setSent(true)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={`${kind}-modal-title`}
+    >
+      <div className="absolute inset-0 bg-ink/45 backdrop-blur-sm" onClick={onClose} />
+
+      <motion.div
+        data-lenis-prevent
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 30 }}
+        transition={{ duration: 0.45, ease: EASE }}
+        className="relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-3xl border border-ink/10 bg-white shadow-[0_30px_80px_-30px_rgba(10,31,68,0.6)] [scrollbar-width:none] sm:max-w-md sm:rounded-3xl [&::-webkit-scrollbar]:hidden"
+      >
+        {/* Brand strip, as on the site's cards */}
+        <div className="h-1 w-full bg-gradient-to-r from-blue-deep via-cyan-brand to-magenta" />
+
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close enquiry form"
+          className="absolute right-4 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-ink/5 hover:text-ink"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        <div className="p-[clamp(1.25rem,3.5vw,2rem)]">
+          {sent ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: EASE }}
+              className="py-6 text-center"
+            >
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cyan-brand/15">
+                <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7 text-cyan-brand" aria-hidden="true">
+                  <path d="m5 13 4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <h2 id={`${kind}-modal-title`} className="mt-5 font-display text-[clamp(1.15rem,2.4vw,1.6rem)] font-extrabold text-ink">
+                Thank you, your enquiry has been sent.
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-[0.9rem] leading-relaxed text-slate-500 pretty">
+                Our team will get back to you shortly.
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-6 text-[0.8rem] font-semibold text-slate-500 underline-offset-4 transition-colors hover:text-ink hover:underline"
+              >
+                Close
+              </button>
+            </motion.div>
+          ) : (
+            <form onSubmit={submit} noValidate>
+              <div className="flex items-center gap-3 pr-10">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white" style={{ background: bg }}>
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h2 id={`${kind}-modal-title`} className="font-display text-[clamp(1.15rem,2.4vw,1.6rem)] font-extrabold tracking-tight text-ink">
+                  Send an enquiry
+                </h2>
+              </div>
+              <p className="mt-2 text-[0.82rem] text-slate-500">
+                Fields marked with an asterisk are required.
+              </p>
+
+              <div className="mt-5 grid gap-3">
+                <Field ref={firstField} label="Name *" name="name" value={form.name} onChange={onChange} error={errors.name} autoComplete="name" placeholder="Your name" />
+                {withEmail && (
+                  <Field label="Email ID *" name="email" type="email" value={form.email} onChange={onChange} error={errors.email} autoComplete="email" placeholder="you@company.com" />
+                )}
+                <Field label="Phone number *" name="phone" type="tel" value={form.phone} onChange={onChange} error={errors.phone} autoComplete="tel" placeholder="+91 ..." />
+                <label className="block">
+                  <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Message *</span>
+                  <textarea
+                    name="message"
+                    rows={3}
+                    value={form.message}
+                    onChange={onChange}
+                    aria-invalid={!!errors.message}
+                    placeholder="Tell us about your requirement…"
+                    className={`mt-2 w-full resize-y rounded-xl border bg-ink/[0.04] px-4 py-3 text-[0.92rem] text-ink placeholder:text-slate-500 transition-colors duration-300 focus:bg-ink/[0.07] focus:outline-none ${
+                      errors.message ? 'border-magenta/70' : 'border-ink/12 focus:border-cyan-brand/70'
+                    }`}
+                  />
+                  {errors.message && <span className="mt-1.5 block text-[0.72rem] font-medium text-magenta-soft">{errors.message}</span>}
+                </label>
+              </div>
+
+              {/* Honeypot for spam bots: off screen, people never fill it */}
+              <input
+                type="text"
+                name="website"
+                value={trap}
+                onChange={(e) => setTrap(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="absolute -left-[9999px] h-px w-px opacity-0"
+              />
+
+              {failed && (
+                <p role="alert" className="mt-4 text-[0.8rem] font-medium text-magenta-soft">
+                  Something went wrong. Please try again, or write to us at{' '}
+                  <a href={`mailto:${company.email}`} className="font-semibold underline underline-offset-4">
+                    {company.email}
+                  </a>
+                  .
+                </p>
+              )}
+
+              <Button type="submit" disabled={sending} className="mt-5 w-full disabled:pointer-events-none disabled:opacity-60">
+                Submit <Arrow />
+              </Button>
+            </form>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 /* ---------------- Widget ---------------- */
 const ITEMS = [
   { key: 'whatsapp', label: 'WhatsApp', Icon: WhatsAppIcon, bg: '#25d366' },
@@ -165,14 +336,16 @@ const ITEMS = [
    children (the back-to-top button) sits at the bottom of the same column. */
 export default function FloatingContact({ children }) {
   const [callOpen, setCallOpen] = useState(false)
+  const [formOpen, setFormOpen] = useState(null) // 'whatsapp' | 'email' | null
+  const closeForm = useCallback(() => setFormOpen(null), [])
 
   const actions = {
-    whatsapp: openWhatsApp,
+    whatsapp: () => setFormOpen('whatsapp'),
     call: () => {
       if (isMobile()) window.location.href = `tel:${CONTACT.phone.replace(/\s/g, '')}`
       else setCallOpen(true)
     },
-    email: openEmail,
+    email: () => setFormOpen('email'),
   }
 
   return (
@@ -204,6 +377,7 @@ export default function FloatingContact({ children }) {
       </div>
 
       <AnimatePresence>{callOpen && <CallModal onClose={() => setCallOpen(false)} />}</AnimatePresence>
+      <AnimatePresence>{formOpen && <ContactFormModal key={formOpen} kind={formOpen} onClose={closeForm} />}</AnimatePresence>
     </>
   )
 }
