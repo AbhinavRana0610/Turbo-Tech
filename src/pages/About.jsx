@@ -149,7 +149,7 @@ export default function About() {
     <>
       <CertificateModal open={certOpen} onClose={closeCert} />
       {/* Hero */}
-      <section className="shell grid items-center gap-[clamp(2rem,5vw,4rem)] pt-[clamp(7rem,15vw,11rem)] pb-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="shell grid items-center gap-[clamp(2rem,5vw,4rem)] pt-[clamp(5.04rem,10.8vw,7.92rem)] pb-[clamp(2rem,5vw,4rem)] lg:grid-cols-[1.1fr_0.9fr]">
         <div>
         <Reveal>
           <Eyebrow>About us</Eyebrow>
