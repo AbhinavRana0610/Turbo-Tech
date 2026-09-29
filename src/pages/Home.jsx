@@ -192,32 +192,34 @@ const PHONES = ['+91 8130243046']
 
 /* Client logos, in public/assets/clients/. The name is the logo's alt text. */
 const CLIENTS = [
-  { name: 'APLON', logo: '/assets/clients/aplon.avif' },
-  { name: 'Bata', logo: '/assets/clients/bata.avif' },
-  { name: 'BigHorn Shoes', logo: '/assets/clients/bighorn.avif' },
+  { name: 'Today', logo: '/assets/clients/today.avif' },
+  { name: 'Walkaroo', logo: '/assets/clients/walkaroo.avif' },
+  { name: 'Liberty', logo: '/assets/clients/liberty.avif' },
+  { name: 'Lancer Footwear', logo: '/assets/clients/lancer.avif' },
+  { name: 'Lakhani Shoes', logo: '/assets/clients/lakhani.avif' },
   { name: 'Dr. Ortho', logo: '/assets/clients/dr-ortho.avif' },
+  { name: 'Bata', logo: '/assets/clients/bata.avif' },
+  { name: 'APLON', logo: '/assets/clients/aplon.avif' },
+  { name: 'BigHorn Shoes', logo: '/assets/clients/bighorn.avif' },
   { name: 'Druk', logo: '/assets/clients/druk.avif' },
   { name: 'iD', logo: '/assets/clients/id.avif' },
-  { name: 'Lakhani Shoes', logo: '/assets/clients/lakhani.avif' },
-  { name: 'Lancer Footwear', logo: '/assets/clients/lancer.avif' },
-  { name: 'Liberty', logo: '/assets/clients/liberty.avif' },
+  { name: 'Paragon', logo: '/assets/clients/paragon.avif' },
   { name: 'Poonam', logo: '/assets/clients/poonam.avif' },
+  { name: 'PU VLK Walking', logo: '/assets/clients/puvlk.avif' },
   { name: 'R-Time', logo: '/assets/clients/r-time.avif' },
   { name: 'Red Bird', logo: '/assets/clients/red-bird.avif' },
+  { name: 'Red PU', logo: '/assets/clients/red-pu.avif' },
   { name: 'Relic Footwear', logo: '/assets/clients/relic.avif' },
   { name: 'Rimco', logo: '/assets/clients/rimco.avif' },
+  { name: 'Stanfield', logo: '/assets/clients/stanfield.avif' },
   { name: 'Star Kidz', logo: '/assets/clients/star-kids.avif' },
-  { name: 'Today', logo: '/assets/clients/today.avif' },
   { name: 'TRV Sports', logo: '/assets/clients/trv.avif' },
-  { name: 'Walkaroo', logo: '/assets/clients/walkaroo.avif' },
   { name: 'Warrior', logo: '/assets/clients/warrior-1.avif' },
-  { name: 'Envy Warrior', logo: '/assets/clients/warrior-2.avif' },
   { name: 'Winger', logo: '/assets/clients/winger.avif' },
 ]
 
 /* ------------------------------------------------------------------ */
 
-/* One client logo on a white tile; an empty tile until the file exists. */
 /* Third-party lab reports, shown whole: the lab allows reproduction only in full,
    so the cards link to the complete PDFs rather than excerpts. */
 const REPORTS = [
@@ -238,6 +240,7 @@ const REPORTS = [
 ]
 const TESTS = ['Organotin compound', 'Phthalate', 'DMFU', 'Lead content']
 
+/* One client logo on a white tile; an empty tile until the file exists. */
 function ClientLogo({ name, logo }) {
   const [missing, setMissing] = useState(false)
   return (
@@ -249,7 +252,7 @@ function ClientLogo({ name, logo }) {
           loading="lazy"
           decoding="async"
           onError={() => setMissing(true)}
-          className="max-h-full max-w-full object-contain"
+          className="max-h-[90%] max-w-[90%] object-contain"
         />
       )}
     </div>
@@ -942,7 +945,7 @@ export default function Home() {
           title={<>Our Prestigious <span className="text-gradient">Clients</span></>}
         />
 
-        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] grid grid-cols-3 gap-3 sm:gap-4 lg:grid-cols-7" gap={0.04}>
+        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] mx-auto grid w-[90%] grid-cols-3 gap-[0.675rem] sm:gap-[0.9rem] lg:grid-cols-6" gap={0.04}>
           {CLIENTS.map((c) => (
             <motion.div key={c.logo} variants={stagItem}>
               <ClientLogo {...c} />
