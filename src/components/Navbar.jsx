@@ -9,7 +9,7 @@ const links = [
   { to: '/products', label: 'Products' },
   { to: '/brochure', label: 'Brochure' },
   { to: '/about', label: 'About Us' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/contact', label: 'Contact Us' },
 ]
 
 const EASE = [0.16, 1, 0.3, 1]
