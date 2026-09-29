@@ -452,7 +452,7 @@ function Prose({ s, n, accent }) {
   if (s.layout === 'image' || s.layout === 'finish') {
     const flip = n % 2 === 0
     return (
-      <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+      <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
         <div className="grid items-center gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-2">
           <Reveal className={`relative ${flip ? 'lg:order-2' : ''}`}>
             {s.layout === 'finish' ? (
@@ -483,7 +483,7 @@ function Prose({ s, n, accent }) {
 
   if (s.layout === 'features') {
     return (
-      <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+      <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
         <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.95fr_1.05fr]">
           <div className="lg:sticky lg:top-28">
             <Heading s={s} n={n} />
@@ -503,7 +503,7 @@ function Prose({ s, n, accent }) {
 
   // split: sticky heading left, reading column right
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="grid items-start gap-[clamp(1.5rem,5vw,4.5rem)] lg:grid-cols-[0.85fr_1.15fr]">
         <div className="lg:sticky lg:top-28">
           <Heading s={s} n={n} />
@@ -531,7 +531,7 @@ function Prose({ s, n, accent }) {
 
 function Band({ s, n, accent }) {
   return (
-    <section className="relative overflow-hidden py-[clamp(2.975rem,7.65vw,6.375rem)]">
+    <section className="relative overflow-hidden py-[calc(clamp(2.975rem,7.65vw,6.375rem)*var(--sy,1))]">
       <ParallaxImage src={s.image} className="absolute inset-0" />
       <div className="absolute inset-0 bg-gradient-to-br from-[#020a1c]/95 via-[#04102a]/88 to-[#002a6b]/85" />
       <div className="anim-drift pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${accent}55, transparent 65%)` }} />
@@ -621,7 +621,7 @@ function Cards({ s, n, accent }) {
         : 'min-[560px]:grid-cols-2 xl:grid-cols-3'
 
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       {s.splitIntro ? (
         <div className="grid items-start gap-[clamp(1.5rem,4vw,4rem)] lg:grid-cols-[0.8fr_1.2fr]">
           <Heading s={s} n={n} />
@@ -720,7 +720,7 @@ function StackCards({ s, n, accent }) {
   const it = s.items[active]
 
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="max-w-3xl">
         <Heading s={s} n={n} />
         <Paras items={s.paras} className="mt-5" />
@@ -805,7 +805,7 @@ function StackCards({ s, n, accent }) {
 
 function SolventProducts({ s, n, accent }) {
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="grid items-end gap-[clamp(1.5rem,4vw,4rem)] lg:grid-cols-2">
         <div>
           <Heading s={s} n={n} />
@@ -863,7 +863,7 @@ function SolventProducts({ s, n, accent }) {
 /* ---------------- types ---------------- */
 function Types({ s, n, accent }) {
   return (
-    <section id={s.id} className="shell scroll-mt-24 py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section id={s.id} className="shell scroll-mt-24 py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <Heading s={s} n={n} center />
       <Reveal delay={0.08}>
         <p className={`mx-auto mt-5 max-w-2xl text-center ${pCls}`}>{s.paras[0]}</p>
@@ -1002,7 +1002,7 @@ function TiltCard({ children, delay = 0 }) {
 function Apps({ s, n, accent }) {
   const cols = s.items.length === 4 ? 'md:grid-cols-2 xl:grid-cols-4' : s.items.length === 5 ? 'md:grid-cols-2 xl:grid-cols-6' : 'md:grid-cols-2 xl:grid-cols-3'
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="max-w-3xl">
         <Heading s={s} n={n} />
         <Paras items={s.paras} className="mt-5" />
@@ -1048,7 +1048,7 @@ function Apps({ s, n, accent }) {
 /* ---------------- product range (release agents) ---------------- */
 function Range({ s, n, accent }) {
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] border border-ink/10 bg-white/80 p-[clamp(1.25rem,4vw,3.5rem)] shadow-[0_30px_70px_-40px_rgba(10,31,68,0.45)] backdrop-blur">
         <div className="anim-drift pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${accent}44, transparent 65%)` }} />
         <div className="relative grid items-start gap-[clamp(1.5rem,4vw,4rem)] lg:grid-cols-[0.9fr_1.1fr]">
@@ -1088,7 +1088,7 @@ function Range({ s, n, accent }) {
 /* ---------------- supply ---------------- */
 function Supply({ s, n, accent }) {
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="grid items-end gap-[clamp(1.5rem,4vw,4rem)] lg:grid-cols-2">
         <Heading s={s} n={n} />
         <div>
@@ -1138,7 +1138,7 @@ function Supply({ s, n, accent }) {
 /* ---------------- manufacturer / supplier / exporter ---------------- */
 function Trio({ s, accent }) {
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <Stagger className="grid gap-4 lg:grid-cols-3" gap={0.12}>
         {s.items.map((it, i) => (
           <motion.div key={it.heading} variants={stagItem}>
@@ -1198,7 +1198,7 @@ function ChecklistSteps({ s, n, accent }) {
   )
 
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.9fr_1.1fr]">
         <div className="lg:sticky lg:top-28">
           <Heading s={s} n={n} />
@@ -1262,7 +1262,7 @@ function ChecklistSteps({ s, n, accent }) {
 
 function ChecklistGrid({ s, n, accent }) {
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy p-[clamp(1.4rem,4vw,3.5rem)] text-white shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
         <div className="anim-drift pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${accent}66, transparent 65%)` }} />
         <div className="relative">
@@ -1328,7 +1328,7 @@ function Quote({ s, accent, page }) {
     }`
 
   return (
-    <section id={s.id} className="shell scroll-mt-24 py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section id={s.id} className="shell scroll-mt-24 py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.9fr_1.1fr]">
         <div className="lg:sticky lg:top-28">
           <Reveal>
@@ -1415,7 +1415,7 @@ function Quote({ s, accent, page }) {
 function Faq({ s, n, accent }) {
   const [open, setOpen] = useState(0)
   return (
-    <section className="shell py-[clamp(2.55rem,6.8vw,5.525rem)]">
+    <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="grid items-start gap-[clamp(2rem,5vw,4.5rem)] lg:grid-cols-[0.7fr_1.3fr]">
         <div className="lg:sticky lg:top-28">
           <Heading s={s} n={n} />
@@ -1467,7 +1467,7 @@ function Faq({ s, n, accent }) {
 function Conclusion({ s, page }) {
   const hasQuote = page.sections.some((x) => x.type === 'quote')
   return (
-    <section className="shell py-[clamp(1.7rem,4.25vw,3.4rem)]">
+    <section className="shell py-[calc(clamp(1.7rem,4.25vw,3.4rem)*var(--sy,1))]">
       <Reveal>
         <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy px-[clamp(1.25rem,5vw,4.5rem)] py-[clamp(2.5rem,6vw,5rem)] shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
           <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)] blur-2xl" />
@@ -1506,7 +1506,7 @@ function Conclusion({ s, page }) {
 function MoreProducts({ page }) {
   const others = productPages.filter((p) => p.slug !== page.slug)
   return (
-    <section className="shell pb-[clamp(1.7rem,4.25vw,3.4rem)] pt-[clamp(0.85rem,2.55vw,1.7rem)]">
+    <section className="shell pb-[calc(clamp(1.7rem,4.25vw,3.4rem)*var(--sy,1))] pt-[calc(clamp(0.85rem,2.55vw,1.7rem)*var(--sy,1))]">
       <Reveal>
         <p className="text-center text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Explore Our Products</p>
       </Reveal>
@@ -1551,9 +1551,13 @@ export default function ProductPage({ page }) {
       {page.sections.map((s, i) => {
         const C = RENDER[s.type]
         if (!['trio', 'quote', 'conclusion'].includes(s.type)) n += 1
-        return <C key={i} s={s} n={n} accent={page.accent} page={page} />
+        const el = <C key={i} s={s} n={n} accent={page.accent} page={page} />
+        // Every section after the first one sits on 20% less vertical padding.
+        return i === 0 ? el : <div key={i} style={{ '--sy': 0.8 }}>{el}</div>
       })}
-      <MoreProducts page={page} />
+      <div style={{ '--sy': 0.8 }}>
+        <MoreProducts page={page} />
+      </div>
     </>
   )
 }
