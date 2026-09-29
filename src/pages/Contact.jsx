@@ -306,8 +306,9 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Map */}
-      <section className="shell pb-[clamp(3rem,8vw,6rem)]">
+      {/* Map. The gap below it is this padding plus the footer's top margin
+          (clamp(4rem,10vw,9rem), shared by every page); the padding alone takes 20% off the sum. */}
+      <section className="shell pb-[calc(clamp(3rem,8vw,6rem)*0.8-clamp(4rem,10vw,9rem)*0.2)]">
         <Reveal>
           <div className="glass relative h-[clamp(14rem,40vw,26rem)] overflow-hidden rounded-2xl">
             <iframe
