@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { Button, Arrow } from './ui'
-import { productPages } from '../data/productPages'
+import { productNav } from '../data/productNav'
 
 const links = [
   { to: '/', label: 'Home' },
@@ -104,7 +104,7 @@ function ProductsMenu({ label }) {
                 variants={{ show: { transition: { staggerChildren: 0.035, delayChildren: 0.05 } } }}
                 className="grid grid-cols-2 gap-1"
               >
-                {productPages.map((p) => (
+                {productNav.map((p) => (
                   <motion.li
                     key={p.slug}
                     variants={{ hide: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } } }}
@@ -210,10 +210,10 @@ export default function Navbar() {
         <nav className="shell flex items-center justify-between gap-3 py-[clamp(0.55rem,1.2vw,1rem)]">
           <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5" aria-label="Turbotech home">
             <img
-              src="/assets/logo-mark.png"
+              src="/assets/logo-mark.webp"
               alt=""
-              width="434"
-              height="455"
+              width="191"
+              height="200"
               className="h-[clamp(1.85rem,3.4vw,2.7rem)] w-auto drop-shadow-[0_0_14px_rgba(0,191,254,0.45)]"
             />
             <Wordmark className="hidden min-[380px]:flex" />
@@ -348,7 +348,7 @@ export default function Navbar() {
                                   className="overflow-hidden"
                                 >
                                   <div className="flex flex-wrap gap-1.5 border-b border-ink/8 py-3">
-                                    {productPages.map((p) => (
+                                    {productNav.map((p) => (
                                       <NavLink
                                         key={p.slug}
                                         to={`/products/${p.slug}`}

@@ -113,13 +113,13 @@ export function Backdrop({ variant = 'default' }) {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <div className="absolute inset-0 bg-paper" />
-      <div className="anim-drift absolute -left-[18%] top-[-12%] h-[55vmax] w-[55vmax] rounded-full bg-[radial-gradient(circle,rgba(0,114,206,0.14),transparent_62%)] blur-[60px]" />
+      <div className="anim-drift absolute -left-[18%] top-[-12%] h-[55vmax] w-[55vmax] rounded-full bg-[radial-gradient(circle,rgba(0,114,206,0.14),transparent_62%)]" />
       <div
-        className="anim-drift absolute -right-[16%] top-[22%] h-[48vmax] w-[48vmax] rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.16),transparent_64%)] blur-[70px]"
+        className="anim-drift absolute -right-[16%] top-[22%] h-[48vmax] w-[48vmax] rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.16),transparent_64%)]"
         style={{ animationDelay: '-9s' }}
       />
       <div
-        className="anim-drift absolute bottom-[-18%] left-[28%] h-[44vmax] w-[44vmax] rounded-full bg-[radial-gradient(circle,rgba(252,0,101,0.08),transparent_66%)] blur-[80px]"
+        className="anim-drift absolute bottom-[-18%] left-[28%] h-[44vmax] w-[44vmax] rounded-full bg-[radial-gradient(circle,rgba(252,0,101,0.08),transparent_66%)]"
         style={{ animationDelay: '-17s' }}
       />
       {/* grid */}
@@ -154,7 +154,7 @@ export function Card({ children, className = '', accent = '#00bffe', interactive
       ref={ref}
       onMouseMove={interactive ? onMove : undefined}
       style={{ '--accent': accent }}
-      className={`group relative overflow-hidden rounded-2xl border border-ink/10 bg-white/85 shadow-[0_1px_2px_rgba(10,31,68,0.04),0_14px_34px_-20px_rgba(10,31,68,0.22)] backdrop-blur-sm transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
+      className={`group relative overflow-hidden rounded-2xl border border-ink/10 bg-white/85 shadow-[0_1px_2px_rgba(10,31,68,0.04),0_14px_34px_-20px_rgba(10,31,68,0.22)] transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
         interactive ? 'hover:-translate-y-1.5 hover:border-ink/20 hover:shadow-[0_2px_4px_rgba(10,31,68,0.05),0_24px_48px_-22px_rgba(0,114,206,0.35)]' : ''
       } ${className}`}
     >

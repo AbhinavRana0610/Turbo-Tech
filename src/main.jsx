@@ -1,15 +1,20 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
-import Products from './pages/Products'
-import ProductDetail from './pages/ProductDetail'
-import About from './pages/About'
-import Contact from './pages/Contact'
-import Brochure from './pages/Brochure'
-import NotFound from './pages/NotFound'
+// Fonts are bundled with the site instead of fetched from Google Fonts.
+import '@fontsource-variable/inter/wght.css'
+import '@fontsource-variable/sora/wght.css'
 import './styles/index.css'
+
+// Every page but Home downloads only when it is first visited.
+const Products = lazy(() => import('./pages/Products'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+const About = lazy(() => import('./pages/About'))
+const Contact = lazy(() => import('./pages/Contact'))
+const Brochure = lazy(() => import('./pages/Brochure'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

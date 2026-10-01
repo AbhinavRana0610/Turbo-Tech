@@ -265,7 +265,7 @@ function Hero({ page }) {
   return (
     <section ref={ref} className="relative overflow-hidden pt-[clamp(6.5rem,14vw,9.5rem)] pb-[clamp(1.7rem,4.25vw,3.4rem)]">
       <div
-        className="anim-drift pointer-events-none absolute -right-[10%] top-0 h-[42rem] w-[42rem] max-w-[90vw] rounded-full opacity-50 blur-[90px]"
+        className="anim-drift pointer-events-none absolute -right-[10%] top-0 h-[42rem] w-[42rem] max-w-[90vw] rounded-full opacity-50"
         style={{ background: `radial-gradient(circle, ${accent}55, transparent 65%)` }}
       />
 
@@ -340,7 +340,7 @@ function Hero({ page }) {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.65, ease: EASE }}
-              className="mt-6 flex max-w-2xl gap-3 rounded-2xl border border-ink/10 bg-white/75 p-4 text-[clamp(0.86rem,0.4vw+0.78rem,0.98rem)] font-medium leading-relaxed text-ink shadow-[0_14px_34px_-22px_rgba(10,31,68,0.35)] backdrop-blur"
+              className="mt-6 flex max-w-2xl gap-3 rounded-2xl border border-ink/10 bg-white/75 p-4 text-[clamp(0.86rem,0.4vw+0.78rem,0.98rem)] font-medium leading-relaxed text-ink shadow-[0_14px_34px_-22px_rgba(10,31,68,0.35)]"
             >
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white" style={{ background: `linear-gradient(135deg, #004da5, ${accent})` }}>
                 <Icon name="pin" className="h-4.5 w-4.5" />
@@ -414,7 +414,7 @@ function Hero({ page }) {
                 transition={{ duration: 0.8, delay: 0.9 + i * 0.15, ease: EASE }}
                 className={`absolute ${['-left-6 top-[12%]', '-right-5 top-[42%]', '-left-3 bottom-[22%]'][i]}`}
               >
-                <div className="anim-float flex items-center gap-2.5 rounded-2xl border border-ink/10 bg-white/90 px-3.5 py-2.5 shadow-[0_18px_40px_-20px_rgba(10,31,68,0.5)] backdrop-blur" style={{ animationDelay: `${-i * 2.3}s` }}>
+                <div className="anim-float flex items-center gap-2.5 rounded-2xl border border-ink/10 bg-white/90 px-3.5 py-2.5 shadow-[0_18px_40px_-20px_rgba(10,31,68,0.5)]" style={{ animationDelay: `${-i * 2.3}s` }}>
                   <span className="flex h-8 w-8 items-center justify-center rounded-xl text-white" style={{ background: `linear-gradient(135deg, #0072ce, ${accent})` }}>
                     <Icon title={c} className="h-4 w-4" />
                   </span>
@@ -459,7 +459,7 @@ function Prose({ s, n, accent }) {
               <FinishVisual accent={accent} />
             ) : (
               <div className="relative">
-                <div className="absolute -inset-3 rounded-[2rem] opacity-60 blur-2xl" style={{ background: `radial-gradient(circle at 30% 30%, ${accent}55, transparent 70%)` }} />
+                <div className="absolute -inset-3 rounded-[2rem] opacity-60" style={{ background: `radial-gradient(circle at 30% 30%, ${accent}55, transparent 70%)` }} />
                 <ParallaxImage src={s.image} className="aspect-[4/3] rounded-[clamp(1rem,2vw,1.75rem)] border border-ink/10 shadow-[0_30px_70px_-35px_rgba(10,31,68,0.45)]" />
                 <span
                   className="absolute -bottom-4 flex h-16 w-16 items-center justify-center rounded-2xl text-white shadow-[0_18px_40px_-16px_rgba(0,77,165,0.7)] max-sm:hidden"
@@ -534,7 +534,7 @@ function Band({ s, n, accent }) {
     <section className="relative overflow-hidden py-[calc(clamp(2.975rem,7.65vw,6.375rem)*var(--sy,1))]">
       <ParallaxImage src={s.image} className="absolute inset-0" />
       <div className="absolute inset-0 bg-gradient-to-br from-[#020a1c]/95 via-[#04102a]/88 to-[#002a6b]/85" />
-      <div className="anim-drift pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${accent}55, transparent 65%)` }} />
+      <div className="anim-drift pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full" style={{ background: `radial-gradient(circle, ${accent}55, transparent 65%)` }} />
 
       <div className="shell relative">
         <div className="mx-auto max-w-4xl text-center">
@@ -551,7 +551,7 @@ function Band({ s, n, accent }) {
             <motion.div
               key={t}
               variants={stagItem}
-              className="rounded-2xl border border-white/10 bg-white/[0.06] p-[clamp(1.2rem,2.2vw,1.75rem)] backdrop-blur-md transition-colors duration-500 hover:bg-white/[0.1]"
+              className="rounded-2xl border border-white/10 bg-white/[0.06] p-[clamp(1.2rem,2.2vw,1.75rem)] transition-colors duration-500 hover:bg-white/[0.1]"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-cyan-soft">
                 <Icon name={['pin', 'truck', 'globe'][i % 3]} />
@@ -760,9 +760,9 @@ function StackCards({ s, n, accent }) {
         </Reveal>
 
         <Reveal delay={0.1} className="h-full">
-          <div className="relative h-full overflow-hidden rounded-[clamp(1.25rem,2.5vw,1.9rem)] border border-ink/10 bg-white/80 p-[clamp(1.4rem,3vw,2.4rem)] shadow-[0_34px_70px_-48px_rgba(10,31,68,0.65)] backdrop-blur lg:min-h-[21rem]">
+          <div className="relative h-full overflow-hidden rounded-[clamp(1.25rem,2.5vw,1.9rem)] border border-ink/10 bg-white/80 p-[clamp(1.4rem,3vw,2.4rem)] shadow-[0_34px_70px_-48px_rgba(10,31,68,0.65)] lg:min-h-[21rem]">
             <div
-              className="pointer-events-none absolute -right-14 -top-14 h-52 w-52 rounded-full opacity-55 blur-3xl"
+              className="pointer-events-none absolute -right-14 -top-14 h-52 w-52 rounded-full opacity-55"
               style={{ background: `radial-gradient(circle, ${accent}55, transparent 70%)` }}
             />
             <AnimatePresence mode="wait">
@@ -877,7 +877,7 @@ function Types({ s, n, accent }) {
                 className="relative overflow-hidden px-[clamp(1.25rem,3vw,2.25rem)] py-[clamp(1.5rem,3vw,2.25rem)] text-white"
                 style={{ background: gi ? 'linear-gradient(135deg,#020a1c,#002a6b 60%,#004da5)' : `linear-gradient(135deg,#004da5,#0072ce 50%,${accent})` }}
               >
-                <div className="anim-drift absolute -right-10 -top-16 h-48 w-48 rounded-full bg-white/15 blur-2xl" />
+                <div className="anim-drift absolute -right-10 -top-16 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.22),transparent_65%)]" />
                 <span className="font-display text-xs font-bold tracking-[0.24em] text-white/70">{String(gi + 1).padStart(2, '0')}</span>
                 <h3 className="mt-2 font-display text-[clamp(1.3rem,2vw+0.8rem,2rem)] font-extrabold leading-tight">{g.t}</h3>
                 {g.palette && (
@@ -1049,8 +1049,8 @@ function Apps({ s, n, accent }) {
 function Range({ s, n, accent }) {
   return (
     <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
-      <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] border border-ink/10 bg-white/80 p-[clamp(1.25rem,4vw,3.5rem)] shadow-[0_30px_70px_-40px_rgba(10,31,68,0.45)] backdrop-blur">
-        <div className="anim-drift pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${accent}44, transparent 65%)` }} />
+      <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] border border-ink/10 bg-white/80 p-[clamp(1.25rem,4vw,3.5rem)] shadow-[0_30px_70px_-40px_rgba(10,31,68,0.45)]">
+        <div className="anim-drift pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full" style={{ background: `radial-gradient(circle, ${accent}44, transparent 65%)` }} />
         <div className="relative grid items-start gap-[clamp(1.5rem,4vw,4rem)] lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <Heading s={s} n={n} />
@@ -1264,7 +1264,7 @@ function ChecklistGrid({ s, n, accent }) {
   return (
     <section className="shell py-[calc(clamp(2.55rem,6.8vw,5.525rem)*var(--sy,1))]">
       <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy p-[clamp(1.4rem,4vw,3.5rem)] text-white shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
-        <div className="anim-drift pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${accent}66, transparent 65%)` }} />
+        <div className="anim-drift pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full" style={{ background: `radial-gradient(circle, ${accent}66, transparent 65%)` }} />
         <div className="relative">
           <Reveal>
             <span className="font-display text-xs font-bold tracking-[0.24em] text-cyan-soft">{String(n).padStart(2, '0')}</span>
@@ -1277,7 +1277,7 @@ function ChecklistGrid({ s, n, accent }) {
           </Reveal>
           <Stagger className="mt-8 grid gap-2.5 min-[480px]:grid-cols-2 lg:grid-cols-5" gap={0.05}>
             {s.bullets.map((b, i) => (
-              <motion.div key={b} variants={stagItem} className="group rounded-xl border border-white/12 bg-white/[0.07] p-4 backdrop-blur transition-colors duration-300 hover:bg-white/[0.13]">
+              <motion.div key={b} variants={stagItem} className="group rounded-xl border border-white/12 bg-white/[0.07] p-4 transition-colors duration-300 hover:bg-white/[0.13]">
                 <span className="font-display text-[0.68rem] font-bold tracking-[0.2em] text-cyan-soft">{String(i + 1).padStart(2, '0')}</span>
                 <p className="mt-2 font-display text-[0.95rem] font-semibold leading-snug">{b}</p>
               </motion.div>
@@ -1470,8 +1470,8 @@ function Conclusion({ s, page }) {
     <section className="shell py-[calc(clamp(1.7rem,4.25vw,3.4rem)*var(--sy,1))]">
       <Reveal>
         <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy px-[clamp(1.25rem,5vw,4.5rem)] py-[clamp(2.5rem,6vw,5rem)] shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
-          <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)] blur-2xl" />
-          <div className="anim-drift pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full blur-2xl" style={{ background: `radial-gradient(circle, ${page.accent}66, transparent 65%)`, animationDelay: '-11s' }} />
+          <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)]" />
+          <div className="anim-drift pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full" style={{ background: `radial-gradient(circle, ${page.accent}66, transparent 65%)`, animationDelay: '-11s' }} />
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.12]"
             style={{
@@ -1546,7 +1546,7 @@ export default function ProductPage({ page }) {
   return (
     <>
       <Hero page={page} />
-      <div className="border-y border-ink/8 bg-white/50 py-5 backdrop-blur">
+      <div className="border-y border-ink/8 bg-white/50 py-5">
         <Marquee items={page.marquee} />
       </div>
       {page.sections.map((s, i) => {

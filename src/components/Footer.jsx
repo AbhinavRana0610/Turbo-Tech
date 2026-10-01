@@ -52,7 +52,7 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <Link to="/" className="flex items-center gap-2.5" aria-label="Turbotech home">
-            <img src="/assets/logo-mark.png" alt="" className="h-11 w-auto" width="434" height="455" />
+            <img src="/assets/logo-mark.webp" alt="" className="h-11 w-auto" width="191" height="200" />
             <Wordmark />
           </Link>
           <p className="mt-5 max-w-xs font-display text-sm font-semibold leading-relaxed text-blue-brand pretty">

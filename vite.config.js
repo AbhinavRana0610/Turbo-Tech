@@ -5,13 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (/node_modules[\\/](three|@react-three)[\\/]/.test(id)) return 'three'
-        },
-      },
-    },
+    // three.js is only reached through the lazily imported 3D scene, so it lands in that
+    // scene's own chunk. (A manual 'three' chunk also swallowed React and so loaded up front.)
     chunkSizeWarningLimit: 1200,
   },
 })

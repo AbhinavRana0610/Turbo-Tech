@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, Suspense } from 'react'
+import { useEffect, useMemo, useRef, useState, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ContactShadows, Environment, Float, Lightformer, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
@@ -117,8 +117,8 @@ function Slipper({ progress, interact, spin = true }) {
   }, [])
 
   const tread = useMemo(() => treadTexture(), [])
-  // logo-ball.png is the logo mark squared up around its circle, so the circle fills the plane.
-  const logo = useTexture('/assets/logo-ball.png')
+  // logo-ball.webp is the logo mark squared up around its circle, so the circle fills the plane.
+  const logo = useTexture('/assets/logo-ball.webp')
   logo.colorSpace = THREE.SRGBColorSpace
   const badge = useRef()
   const face = useRef()
@@ -241,7 +241,7 @@ function Slipper({ progress, interact, spin = true }) {
             centred on the ball wherever the ball sits on screen. */}
         <group ref={face} position={[0.95, 0.75, -1.1]}>
           <mesh castShadow>
-            <sphereGeometry args={[BALL_R, 48, 48]} />
+            <sphereGeometry args={[BALL_R, 32, 32]} />
             <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.55} roughness={0.4} envMapIntensity={0.15} />
           </mesh>
           <mesh ref={badge} position={[0, 0, BALL_R + 0.002]}>
@@ -327,14 +327,38 @@ function useInteraction(wrap) {
   return ix
 }
 
-export default function SlipperScene({ progress, className = '', quality = 'high' }) {
+/** Tells the page once the scene (logo texture included) has drawn its first frames. */
+function Ready({ onReady }) {
+  const frames = useRef(0)
+  useFrame(() => {
+    if (++frames.current === 2) onReady?.()
+  })
+  return null
+}
+
+/** True while the element is on screen, so the scene stops rendering once scrolled past. */
+function useOnScreen(ref) {
+  const [on, setOn] = useState(true)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => setOn(e.isIntersecting))
+    io.observe(el)
+    return () => io.disconnect()
+  }, [ref])
+  return on
+}
+
+export default function SlipperScene({ progress, className = '', quality = 'high', onReady }) {
   const low = quality === 'low'
   const wrap = useRef(null)
   const interact = useInteraction(wrap)
+  const onScreen = useOnScreen(wrap)
   return (
     <div ref={wrap} className={`select-none ${className}`}>
       <Canvas
-        dpr={low ? [1, 1.25] : [1, 1.9]}
+        frameloop={onScreen ? 'always' : 'never'}
+        dpr={low ? [1, 1.25] : [1, 1.5]}
         shadows={!low}
         gl={{ antialias: !low, alpha: true, powerPreference: 'high-performance' }}
         camera={{ position: [0, 1.9, 4.6], fov: 38 }}
@@ -345,7 +369,7 @@ export default function SlipperScene({ progress, className = '', quality = 'high
             position={[4, 7, 4]}
             intensity={2.4}
             castShadow={!low}
-            shadow-mapSize={[1024, 1024]}
+            shadow-mapSize={[512, 512]}
           />
           <directionalLight position={[-6, 3, -5]} intensity={1.1} color="#00bffe" />
           <pointLight position={[3, -1.5, 2]} intensity={14} color="#fc0065" distance={12} />
@@ -361,6 +385,7 @@ export default function SlipperScene({ progress, className = '', quality = 'high
               scale={9}
               blur={2.8}
               far={4}
+              resolution={256}
               color="#001a44"
             />
           )}
@@ -374,6 +399,7 @@ export default function SlipperScene({ progress, className = '', quality = 'high
           </Environment>
 
           <Rig interact={interact} />
+          <Ready onReady={onReady} />
         </Suspense>
       </Canvas>
     </div>

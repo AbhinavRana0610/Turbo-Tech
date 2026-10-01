@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import Lenis from 'lenis'
@@ -134,7 +134,10 @@ export default function Layout() {
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Outlet />
+          {/* Holds the page's place while a lazily loaded page downloads. */}
+          <Suspense fallback={<div className="min-h-[100svh]" />}>
+            <Outlet />
+          </Suspense>
         </motion.main>
       </AnimatePresence>
       <Footer />

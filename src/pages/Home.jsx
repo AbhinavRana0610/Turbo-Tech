@@ -27,6 +27,27 @@ function useHeroProgress() {
   return progress
 }
 
+/* The 3D scene is the heaviest thing on the page, so it waits until the page has
+   finished loading and the browser is idle. A still of the slipper holds its place. */
+function useIdleMount() {
+  const [on, setOn] = useState(false)
+  useEffect(() => {
+    let idle, timer
+    const go = () => {
+      if (window.requestIdleCallback) idle = window.requestIdleCallback(() => setOn(true), { timeout: 2500 })
+      else timer = setTimeout(() => setOn(true), 300)
+    }
+    if (document.readyState === 'complete') go()
+    else window.addEventListener('load', go, { once: true })
+    return () => {
+      window.removeEventListener('load', go)
+      if (idle) window.cancelIdleCallback(idle)
+      clearTimeout(timer)
+    }
+  }, [])
+  return on
+}
+
 function useLowPower() {
   const [low, setLow] = useState(false)
   useEffect(() => {
@@ -417,6 +438,8 @@ const iconProps = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 
 export default function Home() {
   const progress = useHeroProgress()
   const low = useLowPower()
+  const show3d = useIdleMount()
+  const [ready3d, setReady3d] = useState(false)
 
   return (
     <>
@@ -494,20 +517,31 @@ export default function Home() {
             transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="relative order-1 lg:order-2"
           >
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[min(80vw,34rem)] w-[min(80vw,34rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.2),transparent_65%)] blur-2xl" />
-            <Suspense
-              fallback={
-                <div className="flex h-[clamp(15rem,52vw,32rem)] items-center justify-center">
-                  <div className="h-10 w-10 animate-spin rounded-full border-2 border-ink/15 border-t-cyan-brand" />
-                </div>
-              }
-            >
-              <SlipperScene
-                progress={progress}
-                quality={low ? 'low' : 'high'}
-                className="h-[clamp(17rem,52vw,32rem)] w-full [&>canvas]:!touch-pan-y"
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[min(80vw,34rem)] w-[min(80vw,34rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.2),transparent_65%)]" />
+            <div className="relative h-[clamp(17rem,52vw,32rem)] w-full">
+              <img
+                src="/assets/img/hero-slipper.webp"
+                alt=""
+                width="909"
+                height="768"
+                fetchPriority="high"
+                className={`pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-700 ${
+                  ready3d ? 'opacity-0' : 'opacity-100'
+                }`}
               />
-            </Suspense>
+              {show3d && (
+                <Suspense fallback={null}>
+                  <SlipperScene
+                    progress={progress}
+                    quality={low ? 'low' : 'high'}
+                    onReady={() => setReady3d(true)}
+                    className={`absolute inset-0 transition-opacity duration-700 [&>canvas]:!touch-pan-y ${
+                      ready3d ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
+                </Suspense>
+              )}
+            </div>
           </motion.div>
         </div>
 
@@ -960,8 +994,8 @@ export default function Home() {
       <section className="shell pt-[clamp(0.6885rem,1.7213vw,1.377rem)] pb-[clamp(0.85rem,2.125vw,1.7rem)] -mb-[clamp(2rem,5vw,4.5rem)]">
         <Reveal>
           <div className="relative overflow-hidden rounded-[clamp(1rem,2vw,1.75rem)] bg-gradient-to-br from-navy via-blue-deep to-navy px-[clamp(1.25rem,4vw,4rem)] py-[clamp(2.5rem,6vw,5rem)] text-center shadow-[0_40px_80px_-40px_rgba(0,42,107,0.8)]">
-            <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)] blur-2xl" />
-            <div className="anim-drift pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(252,0,101,0.35),transparent_65%)] blur-2xl" style={{ animationDelay: '-11s' }} />
+            <div className="anim-drift pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,191,254,0.45),transparent_65%)]" />
+            <div className="anim-drift pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(252,0,101,0.35),transparent_65%)]" style={{ animationDelay: '-11s' }} />
             <div
               className="pointer-events-none absolute inset-0 opacity-[0.12]"
               style={{
