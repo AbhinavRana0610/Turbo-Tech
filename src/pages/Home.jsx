@@ -572,6 +572,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ------------------------------------------------ 02b CLIENTS */}
+      <section className="shell py-[clamp(2.0655rem,4.8195vw,4.131rem)]">
+        <SectionHeading
+          align="center"
+          title={<>Our Prestigious <span className="text-gradient">Clients</span></>}
+        />
+
+        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] mx-auto grid w-[90%] grid-cols-3 gap-[0.675rem] sm:gap-[0.9rem] lg:grid-cols-6" gap={0.04}>
+          {CLIENTS.map((c) => (
+            <motion.div key={c.logo} variants={stagItem}>
+              <ClientLogo {...c} />
+            </motion.div>
+          ))}
+        </Stagger>
+      </section>
+
       {/* ---------------------------------------------------- 03 PRODUCTS */}
       <section className="shell pt-[clamp(2.295rem,6.12vw,5.355rem)] pb-[clamp(2.0655rem,5.508vw,4.8195rem)]">
         <SectionHeading
@@ -674,22 +690,6 @@ export default function Home() {
             Find Your Solution <Arrow />
           </Button>
         </Reveal>
-      </section>
-
-      {/* ------------------------------------------------ 05b CLIENTS */}
-      <section className="shell py-[clamp(2.0655rem,4.8195vw,4.131rem)]">
-        <SectionHeading
-          align="center"
-          title={<>Our Prestigious <span className="text-gradient">Clients</span></>}
-        />
-
-        <Stagger className="mt-[clamp(2rem,4vw,3.5rem)] mx-auto grid w-[90%] grid-cols-3 gap-[0.675rem] sm:gap-[0.9rem] lg:grid-cols-6" gap={0.04}>
-          {CLIENTS.map((c) => (
-            <motion.div key={c.logo} variants={stagItem}>
-              <ClientLogo {...c} />
-            </motion.div>
-          ))}
-        </Stagger>
       </section>
 
       {/* ------------------------------------------------ 06 APPLICATIONS */}
